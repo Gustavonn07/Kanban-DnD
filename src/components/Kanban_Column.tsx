@@ -2,18 +2,28 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
 import { Column, Id } from "../types"
 import Trash_icon from "./icons/Trash_icon";
+import { useState } from "react";
 
 interface Props {
     column: Column;
     deleteColumn: (id: Id) => void;
+    updateColumn: (id: Id, title: string) => void;
 }
 
-function Column_Title({ column, deleteColumn, attributes, listeners }: Props & {attributes: any; listeners: any;}) {
+interface PropsTitle extends Props {
+    attributes: any; 
+    listeners: any;
+    editMode: boolean;
+    setEditMode: (editMode: boolean) => void;
+}
+
+function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn }: PropsTitle){
 
     return (
         <header
             {...attributes}
             {...listeners}
+            onClick={() => setEditMode(true)}
             className="bg-mainBackgroundColor text-2xl h-[6rem] cursor-grab rounded-lg rounded-b-none py-3 px-4 font-bold border-columnBackgroundColor border-4 flex justify-between items-center"
         >
             <h2 className="flex gap-5 items-center">
@@ -21,7 +31,21 @@ function Column_Title({ column, deleteColumn, attributes, listeners }: Props & {
                     0
                 </span>
 
-                {column.title}
+                {!editMode && column.title}
+                {editMode && 
+                    <input
+                        autoFocus
+                        type="text"
+                        value={column.title}
+                        onChange={e => updateColumn(column.id, e.target.value)}
+                        onBlur={() => setEditMode(false)}
+                        onKeyDown={e => {
+                            if(e.key !== "Enter") return;
+                            setEditMode(false);
+                        }}
+                        className="bg-black focus:border-rose-500 border rounded outline-none px-2"
+                    />
+                }
             </h2>
             <button
                 onClick={() => deleteColumn(column.id)}
@@ -46,14 +70,17 @@ function Column_Footer() {
     )
 }
 
-function Kanban_Column({ column, deleteColumn }: Props) {
+function Kanban_Column({ column, deleteColumn, updateColumn }: Props) {
+
+    const [editMode, setEditMode] = useState(false);
 
     const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
         id: column.id,
         data: {
             type: "Column",
             column,
-        }
+        },
+        disabled: editMode
     });
 
     const style = {
@@ -71,10 +98,13 @@ function Kanban_Column({ column, deleteColumn }: Props) {
             className="bg-columnBackgroundColor w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col"
         >
             <Column_Title 
+                editMode={editMode}
+                setEditMode={setEditMode}
                 attributes={attributes}
                 listeners={listeners}
                 column={column} 
                 deleteColumn={deleteColumn}
+                updateColumn={updateColumn}
             />
             <Column_Container />
             <Column_Footer />

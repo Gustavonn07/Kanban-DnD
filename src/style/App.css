@@ -11,3 +11,15 @@ body,
 #root {
   @apply bg-black text-white box-border
 }
+
+::-webkit-scrollbar {
+  width: .4rem;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: .8rem;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-rose-900 rounded-xl;
+}
