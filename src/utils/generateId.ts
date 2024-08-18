@@ -14,7 +14,7 @@ export function generateId(tipoId: string)  {
     } 
 
     const tipoAtual = containerTiposId.find(tipo => tipo.tipo === tipoId)!;
-    const novoId = tipoAtual.ids.length;
+    const novoId = tipoAtual.ids.length + 1;
     tipoAtual.ids.push(novoId);
 
     return novoId;
