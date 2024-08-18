@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Column, Id } from "../types";
+import { Column, Id, Task } from "../types";
 import { generateId } from "../utils/generateId";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 function Kanban_Board() {
 
   const [columns, setColumns] = useState<Column[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const columnsId = useMemo(() => columns.map(col => col.id), [columns]);
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
@@ -23,6 +24,16 @@ function Kanban_Board() {
       }
     })
   )
+
+  function createTask(columnId: Id) {
+    const newTask: Task = {
+      id: generateId('task'),
+      columnId,
+      content: `Task ${tasks.length + 1}`
+    }
+
+    setTasks([...tasks, newTask])
+  }
 
   function createNewColumn() {
     const columnToAdd: Column = {
@@ -78,10 +89,12 @@ function Kanban_Board() {
             <SortableContext items={columnsId}>
               {columns.map((col) => (
                 <Kanban_Column
-                  updateColumn={updateColumn}
                   column={col}
                   key={col.id}
+                  updateColumn={updateColumn}
                   deleteColumn={deleteColumn}
+                  createTask={createTask}
+                  tasks={tasks.filter(tasks => tasks.columnId === col.id)}
                 />
               ))}
             </SortableContext>
@@ -98,7 +111,7 @@ function Kanban_Board() {
 
         {createPortal(
           <DragOverlay>
-                {activeColumn && (<Kanban_Column column={activeColumn} deleteColumn={deleteColumn} updateColumn={updateColumn}/>)}
+                {activeColumn && (<Kanban_Column createTask={createTask} column={activeColumn} deleteColumn={deleteColumn} updateColumn={updateColumn} tasks={tasks}/>)}
           </DragOverlay>,
           document.body
         )}

@@ -1,26 +1,38 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
-import { Column, Id } from "../types"
+import { Column, Id, Task } from "../types"
 import Trash_icon from "./icons/Trash_icon";
 import { useState } from "react";
+import Plus_Icon from "./icons/Plus_Icon";
+import Kanban_Task from "./Kanban_Task";
 
 interface Props {
     column: Column;
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
+    createTask: (columnId: Id) => void;
+    tasks: Task[];
 }
 
-interface PropsTitle extends Props {
+interface PropsTitle {
     attributes: any; 
     listeners: any;
     editMode: boolean;
     setEditMode: (editMode: boolean) => void;
+    column: Column;
+    deleteColumn: (id: Id) => void;
+    updateColumn: (id: Id, title: string) => void;
+}
+
+interface PropsFooter {
+    column: Column;
+    createTask: (columnId: Id) => void;
 }
 
 function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn }: PropsTitle){
 
     return (
-        <header
+        <nav
             {...attributes}
             {...listeners}
             onClick={() => setEditMode(true)}
@@ -53,24 +65,26 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
             >
                 <Trash_icon />
             </button>
-        </header>
+        </nav>
     )
 }
 
-function Column_Container() {
+function Column_Footer({ column, createTask }: PropsFooter) {
 
     return (
-        <div className="flex flex-grow">Content</div>
+        <button
+            className="mt-auto flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold"
+            onClick={() => {
+                createTask(column.id)
+            }}
+        >
+            <Plus_Icon />
+            Add task
+        </button>
     )
 }
-function Column_Footer() {
 
-    return (
-        <div>Footer</div>
-    )
-}
-
-function Kanban_Column({ column, deleteColumn, updateColumn }: Props) {
+function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks }: Props) {
 
     const [editMode, setEditMode] = useState(false);
 
@@ -91,7 +105,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn }: Props) {
     if(isDragging) return <div ref={setNodeRef} style={style} className="bg-columnBackgroundColor w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col opacity-60 border-2 border-rose-500"></div>
 
     return (
-        <ul 
+        <section 
             ref={setNodeRef}
             style={style}
             id={`${column.id}`}
@@ -102,13 +116,24 @@ function Kanban_Column({ column, deleteColumn, updateColumn }: Props) {
                 setEditMode={setEditMode}
                 attributes={attributes}
                 listeners={listeners}
-                column={column} 
+                column={column}
                 deleteColumn={deleteColumn}
                 updateColumn={updateColumn}
             />
-            <Column_Container />
-            <Column_Footer />
-        </ul>
+            
+            <ul className="flex flex-col gap-4 p-2 flex-grow overflow-x-hidden overflow-y-auto">
+                {
+                    tasks.map(task => (
+                        <Kanban_Task key={task.id} task={task} />
+                    ))
+                }
+            </ul>
+
+            <Column_Footer 
+                column={column}
+                createTask={createTask}
+            />
+        </section>
     )
 }
 
