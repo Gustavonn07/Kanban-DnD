@@ -10,3 +10,12 @@ export type Task = {
     columnId: Id,
     content: string
 }
+
+export type Log = {
+    id: Id,
+    columnId: Id,
+    taskId: Id
+    content: string,
+    type: string,
+    date: string
+}
