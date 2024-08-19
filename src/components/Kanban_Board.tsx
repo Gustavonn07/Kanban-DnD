@@ -44,7 +44,6 @@ function Kanban_Board() {
       date: new getDateInfo().getDateString(),
       prevContent
     };
-    console.log(newLog);
 
     setLogs([...logs, newLog]);
   }
@@ -109,7 +108,7 @@ function Kanban_Board() {
       const newTasks = tasks.filter(task => task.columnId !== id);
       setTasks(newTasks);
 
-      createLog(id, `Column ${id} deleted`, 'deletedColumn');
+      createLog(id, `Column ${columns.find(col => col.id === id)?.title}`, 'deletedColumn');
     }
 }
 
@@ -142,44 +141,55 @@ function Kanban_Board() {
   }
 
   function onDragOver(event: DragOverEvent) {
-    const {active, over} = event;
+    const { active, over } = event;
 
-    if(!over) return;
+    if (!over) return;
     const activeId = active.id;
     const overId = over.id;
 
-    if(activeId === overId) return;
+    if (activeId === overId) return;
 
     const isActiveATask = active.data.current?.type === "Task";
     const isOverATask = over.data.current?.type === "Task";
-
-    if(!isActiveATask) return;
-
-    // Droping a task over another task
-    if(isActiveATask && isOverATask) {
-      setTasks(tasks => {
-        const activeIndex = tasks.findIndex(t => t.id === activeId);
-        const overIndex = tasks.findIndex(t => t.id === overId);
-
-        tasks[activeIndex].columnId = tasks[overIndex].columnId
-
-        return arrayMove(tasks, activeIndex, overIndex);
-      })
-    }
-
     const isOverAColumn = over.data.current?.type === "Column";
 
-    // Droping a task over a column
-    if(isActiveATask && isOverAColumn) {
-      setTasks(tasks => {
-        const activeIndex = tasks.findIndex(t => t.id === activeId);
+    // Dropping a task over another task
+    if (isActiveATask && isOverATask) {
+        setTasks(tasks => {
+            const activeIndex = tasks.findIndex(t => t.id === activeId);
+            const overIndex = tasks.findIndex(t => t.id === overId);
 
-        tasks[activeIndex].columnId = overId;
+            const newTasks = tasks.map(task => {
+                if (task.id === activeId) {
+                    return { ...task, columnId: tasks[overIndex].columnId };
+                }
+                return task;
+            });
 
-        return arrayMove(tasks, activeIndex, activeIndex);
-      })
+            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to task "${over.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === overId)?.columnId)?.title}"`, "dragEnd");
+
+            return arrayMove(newTasks, activeIndex, overIndex);
+        });
     }
-  }
+
+    // Dropping a task over a column
+    if (isActiveATask && isOverAColumn) {
+        setTasks(tasks => {
+
+            const updatedTasks = tasks.map(task => {
+                if (task.id === activeId) {
+                    return { ...task, columnId: overId };
+                }
+                return task;
+            });
+
+            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to column "${over.data.current?.column.title || 'Unknown Column'}"`, "dragEnd");
+
+            return updatedTasks;
+        });
+    }
+}
+
 
   function onDragEnd(event: DragEndEvent) {
     setActiveColumn(null);
@@ -193,11 +203,8 @@ function Kanban_Board() {
 
     if(activeId === overId) return;
 
-    if (active.data.current?.type === "Column") {
-      createLog(activeId, `Dragged column "${active.data.current?.column.title}" at "${over.data.current?.column.title}"`, "dragEnd");
-
-    } else if (active.data.current?.type === "Task") {
-      createLog(activeId, `Dragged task "${active.data.current?.task.content}" at "${over.data.current?.task.content}"`, "dragEnd");
+    if (activeColumn) {
+      createLog(activeId, `Dragged column "${active.data.current?.column.title}" to "${over.data.current?.column.title}"`, "dragEnd");
     }
 
     setColumns(columns => {
@@ -281,6 +288,8 @@ function Kanban_Board() {
         <Kanban_Logs
           logs={logs}
           setOpenLogModal={setOpenLogModal}
+          columns={columns}
+          tasks={tasks}
         />
       }
     </section>
