@@ -11,6 +11,7 @@ interface Props {
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
     createTask: (columnId: Id) => void;
+    deleteTask: (id: Id) => void;
     tasks: Task[];
 }
 
@@ -84,7 +85,7 @@ function Column_Footer({ column, createTask }: PropsFooter) {
     )
 }
 
-function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks }: Props) {
+function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask }: Props) {
 
     const [editMode, setEditMode] = useState(false);
 
@@ -124,7 +125,11 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks }
             <ul className="flex flex-col gap-4 p-2 flex-grow overflow-x-hidden overflow-y-auto">
                 {
                     tasks.map(task => (
-                        <Kanban_Task key={task.id} task={task} />
+                        <Kanban_Task
+                            key={task.id} 
+                            task={task}
+                            deleteTask={deleteTask}
+                        />
                     ))
                 }
             </ul>
