@@ -14,7 +14,7 @@ function Log_Container({ log }: PropsContainer) {
 
     return (
         <li
-
+            
         >
             
         </li>
@@ -43,11 +43,11 @@ function Kanban_Logs({ setOpenLogModal, logs }: Props) {
             <ul>
                 {
                     logs.map(log => (
-                        <li
-                        
-                        >
-                            columnId: {log.columnId}, taskId: {log.taskId}, id: {log.id}, content: {log.content}, prevContent: {log.prevContent} date: {log.date} type: {log.type}
-                        </li>
+                        <Log_Container 
+                            log={log}
+                        />
+
+                        //columnId: {log.columnId}, taskId: {log.taskId}, id: {log.id}, content: {log.content}, prevContent: {log.prevContent} date: {log.date} type: {log.type}
                     ))
                 }
             </ul>

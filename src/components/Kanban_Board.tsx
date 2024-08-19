@@ -192,6 +192,13 @@ function Kanban_Board() {
 
     if(activeId === overId) return;
 
+    if (active.data.current?.type === "Column") {
+      createLog(activeId, `Dragged column "${active.data.current?.column.title}" at "${over.data.current?.column.title}"`, "dragEnd");
+
+    } else if (active.data.current?.type === "Task") {
+      createLog(activeId, `Dragged task "${active.data.current?.task.content}" at "${over.data.current?.task.content}"`, "dragEnd");
+    }
+
     setColumns(columns => {
       const activeColumnIndex = columns.findIndex(col => col.id === activeId);
       const overColumnIndex = columns.findIndex(col => col.id === overId);
