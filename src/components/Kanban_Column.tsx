@@ -1,8 +1,8 @@
-import { useSortable } from "@dnd-kit/sortable";
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
 import { Column, Id, Task } from "../types"
 import Trash_icon from "./icons/Trash_icon";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Plus_Icon from "./icons/Plus_Icon";
 import Kanban_Task from "./Kanban_Task";
 
@@ -89,8 +89,18 @@ function Column_Footer({ column, createTask }: PropsFooter) {
 function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask }: Props) {
 
     const [editMode, setEditMode] = useState(false);
+    const tasksIds = useMemo(() => {
+        return tasks.map(tasks => tasks.id);
+    }, [tasks])
 
-    const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+    const { 
+        setNodeRef, 
+        attributes, 
+        listeners, 
+        transform, 
+        transition, 
+        isDragging 
+    } = useSortable({
         id: column.id,
         data: {
             type: "Column",
@@ -124,16 +134,16 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
             />
             
             <ul className="flex flex-col gap-4 p-2 flex-grow overflow-x-hidden overflow-y-auto">
-                {
-                    tasks.map(task => (
+                <SortableContext items={tasksIds}>
+                    {tasks.map(task => (
                         <Kanban_Task
-                            key={task.id} 
+                            key={task.id}
                             task={task}
                             deleteTask={deleteTask}
                             updateTask={updateTask}
                         />
-                    ))
-                }
+                    ))}
+                </SortableContext>
             </ul>
 
             <Column_Footer 
