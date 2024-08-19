@@ -1,35 +1,39 @@
 import { twMerge } from "tailwind-merge";
-import { Column, Log, Task } from "../types";
+import { Column, Id, Log } from "../types";
 import Close_Icon from "./icons/Close_Icon";
+import { truncateString } from "../utils/truncateString";
 
 interface Props {
     setOpenLogModal: (openLogModal: boolean) => void;
     logs: Log[];
     columns: Column[];
-    tasks: Task[];
 };
 
 interface PropsContainer {
     log: Log;
     columns: Column[];
-    tasks: Task[];
+    index: Id;
 };
 
-function Log_Container({ log, columns, tasks }: PropsContainer) {
+function Log_Container({ log, columns, index }: PropsContainer) {
     const logStyles: { [key: string]: string[] } = {
       createTask: ['bg-green-100', 'Created the task:'],
       deleteTask: ['bg-red-100', 'Deleted the task:'],
-      updateTask: ['bg-blue-100', 'Updated the task:'],
-      createColumn: ['bg-yellow-100', 'Created the column:'],
-      deletedColumn: ['bg-gray-100', 'Deleted the column:'],
-      updateColumn: ['bg-purple-100', 'Updated the column:'],
-      dragEnd: ['bg-teal-100', 'Dragged down']
+      updateTask: ['bg-yellow-100', 'Updated the task:'],
+      createColumn: ['bg-green-100', 'Created the column:'],
+      deletedColumn: ['bg-red-100', 'Deleted the column:'],
+      updateColumn: ['bg-yellow-100', 'Updated the column:'],
+      dragEnd: ['bg-purple-100', 'Dragged down']
     };
   
     return (
         <li
-            className={twMerge('p-2 min-h-[6rem] text-columnBackgroundColor font-medium flex gap-2 text-2xl ', logStyles[log.type][0] || 'bg-white text-black')}
+            className={twMerge('p-2 rounded relative shadow-md shadow-[#00000060] w-2/3 max-w-2/3 min-h-[6rem] text-columnBackgroundColor font-medium flex justify-start items-center gap-2 text-2xl ', logStyles[log.type][0] || 'bg-white text-black')}
         >   
+            <span className="absolute top-1 right-3 text-xl">
+                #{index}
+            </span>
+
             {log.type === 'createTask' || log.type === 'createColumn' || log.type === 'deletedColumn' ? (
                 <>
                     <p>{logStyles[log.type][1]}</p>
@@ -47,10 +51,10 @@ function Log_Container({ log, columns, tasks }: PropsContainer) {
                 <>
                     <p>{logStyles[log.type][1]}</p>
                     {log.type === 'updateTask' && (
-                        <p>"{log.content}"</p>
+                        <p>"{truncateString(log.content, 12)}"</p>
                     )}
                     <p>"{columns.find(col => col.id === log.columnId)?.title}" to</p>
-                    <p>"{log.prevContent}"</p>
+                    <p>"{truncateString(log.prevContent, 12)}"</p>
                     <p>at {log.time}</p>
                 </>
             ) : (
@@ -65,7 +69,7 @@ function Log_Container({ log, columns, tasks }: PropsContainer) {
     );
   }
 
-function Kanban_Logs({ setOpenLogModal, logs, columns, tasks }: Props) {
+function Kanban_Logs({ setOpenLogModal, logs, columns }: Props) {
 
   return (
 
@@ -84,13 +88,13 @@ function Kanban_Logs({ setOpenLogModal, logs, columns, tasks }: Props) {
                 <Close_Icon/>
             </button>
 
-            <ul className="flex flex-col gap-6 overflow-y-auto h-full p-4">
+            <ul className="flex flex-col gap-6 overflow-y-auto h-full p-10">
                 {
-                    logs.map(log => (
+                    logs.map((log, index) => (
                         <Log_Container 
                             columns={columns}
-                            tasks={tasks}
                             log={log}
+                            index={index}
                         />
                     ))
                 }

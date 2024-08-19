@@ -166,7 +166,7 @@ function Kanban_Board() {
                 return task;
             });
 
-            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to task "${over.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === overId)?.columnId)?.title}"`, "dragEnd");
+            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to task "${over.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === overId)?.columnId)?.title}" at`, "dragEnd");
 
             return arrayMove(newTasks, activeIndex, overIndex);
         });
@@ -183,7 +183,7 @@ function Kanban_Board() {
                 return task;
             });
 
-            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to column "${over.data.current?.column.title || 'Unknown Column'}"`, "dragEnd");
+            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to column "${over.data.current?.column.title || 'Unknown Column'}" at`, "dragEnd");
 
             return updatedTasks;
         });
@@ -204,7 +204,7 @@ function Kanban_Board() {
     if(activeId === overId) return;
 
     if (activeColumn) {
-      createLog(activeId, `Dragged column "${active.data.current?.column.title}" to "${over.data.current?.column.title}"`, "dragEnd");
+      createLog(activeId, `Dragged column "${active.data.current?.column.title}" to "${over.data.current?.column.title}" at`, "dragEnd");
     }
 
     setColumns(columns => {
@@ -289,7 +289,6 @@ function Kanban_Board() {
           logs={logs}
           setOpenLogModal={setOpenLogModal}
           columns={columns}
-          tasks={tasks}
         />
       }
     </section>
