@@ -33,15 +33,17 @@ function Kanban_Board() {
     })
   )
 
-  function createLog(columnId: Id, taskId: Id, content: string, type: string, date: string) {
+  function createLog(columnId: Id, content: string, type: string, prevContent?: string, taskId?: Id,) {
     const newLog: Log = {
       id: generateId('log'),
       columnId,
       taskId,
       content,
       type,
-      date: new getDateInfo().getDateString()
+      date: new getDateInfo().getDateString(),
+      prevContent
     };
+    console.log(newLog);
 
     setLogs([...logs, newLog]);
   }
@@ -53,21 +55,36 @@ function Kanban_Board() {
       content: `Task ${tasks.length + 1}`
     };
 
+    createLog(newTask.columnId, newTask.content, "createTask", '' , newTask.id);
+
     setTasks([...tasks, newTask]);
   }
 
   function deleteTask(id: Id) {
-    const filtredTasks = tasks.filter(task => task.id !== id);
-    setTasks(filtredTasks);
+    const deletedTask = tasks.find(task => task.id === id);
+
+    if (deletedTask) {
+      const filteredTasks = tasks.filter(task => task.id !== id);
+      setTasks(filteredTasks);
+
+      createLog(deletedTask.columnId, deletedTask.content, "deleteTask", '', deletedTask.id);
+    }
   }
 
   function updateTask(id: Id, content: string) {
+    const prevContent = tasks.find(task => task.id === id)?.content;
     const newTasks = tasks.map(task => {
-      if(task.id !== id) return task;
-      return {...task, content}
+        if (task.id !== id) return task;
+        return { ...task, content };
     });
 
     setTasks(newTasks);
+
+    const updatedTask = newTasks.find(task => task.id === id);
+
+    if (updatedTask) {
+      createLog(updatedTask.columnId, updatedTask.content, "updateTask", prevContent, updatedTask.id);
+    };
   }
 
   function createNewColumn() {
@@ -77,23 +94,38 @@ function Kanban_Board() {
     }
 
     setColumns([...columns, columnToAdd]);
-  }
-  
-  function deleteColumn(id: Id) {
-    const filtredColumns = columns.filter(col => col.id !== id);
-    setColumns(filtredColumns);
 
-    const newTasks = tasks.filter(t => t.columnId !== id);
-    setTasks(newTasks);
+    createLog(columnToAdd.id, columnToAdd.title, "createColumn");
   }
+
+  function deleteColumn(id: Id) {
+    const deletedColumn = columns.find(col => col.id === id);
+
+    if (deletedColumn) {
+      const filteredColumns = columns.filter(col => col.id !== id);
+      setColumns(filteredColumns);
+
+      const newTasks = tasks.filter(task => task.columnId !== id);
+      setTasks(newTasks);
+
+      createLog(id, `Column ${id} deleted`, 'deletedColumn');
+    }
+}
 
   function updateColumn(id: Id, title: string) {
+    const prevContent = columns.find(column => column.id === id)?.title;
     const newColumns = columns.map(col => {
       if(col.id !== id) return col;
       return {...col, title}
     });
 
     setColumns(newColumns);
+
+    const updatedColumn = newColumns.find(col => col.id === id);
+
+    if (updatedColumn) {
+      createLog(updatedColumn.id, updatedColumn.title, "updateColumn", prevContent);
+    };
   }
 
   function onDragStart(event: DragStartEvent) {

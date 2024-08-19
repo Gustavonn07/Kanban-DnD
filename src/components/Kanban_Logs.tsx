@@ -1,4 +1,4 @@
-import { Log } from "../types";
+import { Id, Log } from "../types";
 import Close_Icon from "./icons/Close_Icon";
 
 interface Props {
@@ -27,11 +27,11 @@ function Kanban_Logs({ setOpenLogModal, logs }: Props) {
 
     <section 
         onClick={() => setOpenLogModal(false)}
-        className="absolute left-0 w-full h-screen flex justify-center items-center bg-[#00000060]"
+        className="absolute left-0 w-full h-screen flex justify-center items-center bg-[#00000080]"
     >
         <div
             onClick={(e) => e.stopPropagation()}
-            className="w-10/12 relative stroke-2 h-[90vh] rounded shadow-md shadow-[#00000060] bg-gray-500"
+            className="w-10/12 relative stroke-2 h-[90vh] rounded shadow-md shadow-[#00000060] bg-mainBackgroundColor"
         >
             <button 
                 onClick={() => setOpenLogModal(false)}
@@ -41,7 +41,15 @@ function Kanban_Logs({ setOpenLogModal, logs }: Props) {
             </button>
 
             <ul>
-
+                {
+                    logs.map(log => (
+                        <li
+                        
+                        >
+                            columnId: {log.columnId}, taskId: {log.taskId}, id: {log.id}, content: {log.content}, prevContent: {log.prevContent} date: {log.date} type: {log.type}
+                        </li>
+                    ))
+                }
             </ul>
 
         </div>

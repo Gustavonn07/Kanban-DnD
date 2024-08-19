@@ -14,8 +14,9 @@ export type Task = {
 export type Log = {
     id: Id,
     columnId: Id,
-    taskId: Id
     content: string,
     type: string,
     date: string
+    taskId?: Id
+    prevContent?: string
 }
