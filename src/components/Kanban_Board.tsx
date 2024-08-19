@@ -40,6 +40,7 @@ function Kanban_Board() {
       taskId,
       content,
       type,
+      time: new getDateInfo().getCurrentTime(),
       date: new getDateInfo().getDateString(),
       prevContent
     };

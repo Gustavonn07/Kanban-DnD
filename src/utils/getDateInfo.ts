@@ -13,6 +13,18 @@ export class getDateInfo {
         this.year = this.date.getFullYear();
     }
 
+    getCurrentTime(): string {
+        
+        const hours = this.date.getHours();
+        const minutes = this.date.getMinutes();
+        const seconds = this.date.getSeconds();
+        
+        // HH:MM:SS
+        const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        
+        return timeStr;
+    }
+
     getDateString(): string {
         const day = this.day.toString().padStart(2, '0');
         const month = (this.monthIndex + 1).toString().padStart(2, '0');

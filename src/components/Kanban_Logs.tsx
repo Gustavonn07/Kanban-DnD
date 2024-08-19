@@ -1,4 +1,5 @@
-import { Id, Log } from "../types";
+import { twMerge } from "tailwind-merge";
+import { Log } from "../types";
 import Close_Icon from "./icons/Close_Icon";
 
 interface Props {
@@ -11,15 +12,25 @@ interface PropsContainer {
 };
 
 function Log_Container({ log }: PropsContainer) {
-
+    const logStyles: { [key: string]: string } = {
+      createTask: 'bg-green-100 text-green-800',
+      deleteTask: 'bg-red-100 text-red-800',
+      updateTask: 'bg-blue-100 text-blue-800',
+      createColumn: 'bg-yellow-100 text-yellow-800',
+      deletedColumn: 'bg-gray-100 text-gray-800',
+      updateColumn: 'bg-purple-100 text-purple-800',
+      dragEnd: 'bg-teal-100 text-teal-800'
+    };
+  
     return (
-        <li
-            
-        >
-            
-        </li>
+      <li
+        className={twMerge('p-2 min-h-[6rem]', logStyles[log.type] || 'bg-white text-black')}
+      >
+        {log.content}
+        {log.time}
+      </li>
     );
-}
+  }
 
 function Kanban_Logs({ setOpenLogModal, logs }: Props) {
 
@@ -40,7 +51,7 @@ function Kanban_Logs({ setOpenLogModal, logs }: Props) {
                 <Close_Icon/>
             </button>
 
-            <ul>
+            <ul className="flex flex-col gap-6 overflow-y-auto h-full p-4">
                 {
                     logs.map(log => (
                         <Log_Container 
