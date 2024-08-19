@@ -12,6 +12,7 @@ interface Props {
     updateColumn: (id: Id, title: string) => void;
     createTask: (columnId: Id) => void;
     deleteTask: (id: Id) => void;
+    updateTask: (id: Id, content: string) => void;
     tasks: Task[];
 }
 
@@ -85,7 +86,7 @@ function Column_Footer({ column, createTask }: PropsFooter) {
     )
 }
 
-function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask }: Props) {
+function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask }: Props) {
 
     const [editMode, setEditMode] = useState(false);
 
@@ -129,6 +130,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
                             key={task.id} 
                             task={task}
                             deleteTask={deleteTask}
+                            updateTask={updateTask}
                         />
                     ))
                 }
