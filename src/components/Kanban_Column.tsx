@@ -24,6 +24,7 @@ interface PropsTitle {
     column: Column;
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
+    tasks: Task[];
 }
 
 interface PropsFooter {
@@ -31,7 +32,7 @@ interface PropsFooter {
     createTask: (columnId: Id) => void;
 }
 
-function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn }: PropsTitle){
+function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn, tasks }: PropsTitle){
 
     return (
         <nav
@@ -42,7 +43,7 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
         >
             <h2 className="flex gap-5 items-center">
                 <span className="flex justify-center items-center bg-columnBackgroundColor px-2 py-1 rounded-lg">
-                    0
+                    {tasks.length}
                 </span>
 
                 {!editMode && column.title}
@@ -75,7 +76,7 @@ function Column_Footer({ column, createTask }: PropsFooter) {
 
     return (
         <button
-            className="mt-auto flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold"
+            className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {
                 createTask(column.id)
             }}
@@ -114,14 +115,14 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
         transform: CSS.Transform.toString(transform),
     };
 
-    if(isDragging) return <div ref={setNodeRef} style={style} className="bg-columnBackgroundColor w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col opacity-60 border-2 border-rose-500"></div>
+    if(isDragging) return <div ref={setNodeRef} style={style} className="bg-columnBackgroundColor min-w-[35rem] w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col opacity-60 border-2 border-rose-500"></div>
 
     return (
         <section 
             ref={setNodeRef}
             style={style}
             id={`${column.id}`}
-            className="bg-columnBackgroundColor w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col"
+            className="bg-columnBackgroundColor w-[35rem] min-w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col"
         >
             <Column_Title 
                 editMode={editMode}
@@ -131,6 +132,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
                 column={column}
                 deleteColumn={deleteColumn}
                 updateColumn={updateColumn}
+                tasks={tasks}
             />
             
             <ul className="flex flex-col gap-4 p-2 flex-grow overflow-x-hidden overflow-y-auto">
