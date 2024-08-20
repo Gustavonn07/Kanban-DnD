@@ -66,7 +66,7 @@ function Log_Container({ log, columns, index }: PropsContainer) {
                 </>
             ) : (
                 <>
-                    <p>{truncateString(log.content, 12)}</p>
+                    <p>{log.content}</p>
                     <p>{log.time}</p>
                 </>
             )}
