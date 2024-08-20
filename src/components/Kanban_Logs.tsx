@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import { Column, Id, Log } from "../types";
+import { Column, Log } from "../types";
 import Close_Icon from "./icons/Close_Icon";
 import { truncateString } from "../utils/truncateString";
 
@@ -12,7 +12,7 @@ interface Props {
 interface PropsContainer {
     log: Log;
     columns: Column[];
-    index: Id;
+    index: number;
 };
 
 function Log_Container({ log, columns, index }: PropsContainer) {
@@ -28,44 +28,49 @@ function Log_Container({ log, columns, index }: PropsContainer) {
   
     return (
         <li
-            className={twMerge('p-2 rounded relative shadow-md shadow-[#00000060] w-2/3 max-w-2/3 min-h-[6rem] text-columnBackgroundColor font-medium flex justify-start items-center gap-2 text-2xl ', logStyles[log.type][0] || 'bg-white text-black')}
+            className={twMerge('p-2 rounded relative shadow-md shadow-[#00000060] w-full max-w-full min-h-[6rem] text-columnBackgroundColor font-medium flex justify-start items-center gap-2 text-2xl ', logStyles[log.type][0] || 'bg-white text-black')}
         >   
             <span className="absolute top-1 right-3 text-xl">
-                #{index}
+                #{index + 1}
             </span>
 
             {log.type === 'createTask' || log.type === 'createColumn' || log.type === 'deletedColumn' ? (
                 <>
                     <p>{logStyles[log.type][1]}</p>
-                    <p>"{log.content}"</p>
+                    <p>"{truncateString(log.content, 12)}"</p>
                     <p>at {log.time}</p>
                 </>
             ) : log.type === 'deleteTask' ? (
                 <>
                     <p>{logStyles[log.type][1]}</p>
-                    <p>"{log.content}" from</p>
+                    <p>"{truncateString(log.content, 12)}" from</p>
                     <p>"{columns.find(col => col.id === log.columnId)?.title}"</p>
                     <p>at {log.time}</p>
                 </>
             ): log.type === 'updateTask' || log.type === 'updateColumn' ? (
                 <>
                     <p>{logStyles[log.type][1]}</p>
-                    {log.type === 'updateTask' && (
-                        <p>"{truncateString(log.content, 12)}"</p>
+                    {log.type === 'updateTask' ? (
+                        <>
+                            <p>"{truncateString(log.content, 12)}" from</p>
+                            <p>"{columns.find(col => col.id === log.columnId)?.title}" to</p>
+                            <p>"{truncateString(log.prevContent, 12)}"</p>
+                        </>
+                    ) : (
+                        <>
+                            <p>"{truncateString(log.prevContent, 12)}" to</p>
+                            <p>"{truncateString(columns.find(col => col.id === log.columnId)?.title, 12)}"</p>
+                        </>
                     )}
-                    <p>"{columns.find(col => col.id === log.columnId)?.title}" to</p>
-                    <p>"{truncateString(log.prevContent, 12)}"</p>
                     <p>at {log.time}</p>
                 </>
             ) : (
                 <>
-                    <p>{log.content}</p>
+                    <p>{truncateString(log.content, 12)}</p>
                     <p>{log.time}</p>
                 </>
             )}
         </li>
-      
-        // columnId: {log.columnId}, taskId: {log.taskId}, id: {log.id}, content: {log.content}, prevContent: {log.prevContent} date: {log.date} type: {log.type}
     );
   }
 
@@ -88,7 +93,7 @@ function Kanban_Logs({ setOpenLogModal, logs, columns }: Props) {
                 <Close_Icon/>
             </button>
 
-            <ul className="flex flex-col gap-6 overflow-y-auto h-full p-10">
+            <ul className="flex flex-col gap-6 overflow-y-auto h-full w-2/3 p-10">
                 {
                     logs.map((log, index) => (
                         <Log_Container 

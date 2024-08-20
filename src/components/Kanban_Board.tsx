@@ -74,10 +74,10 @@ function Kanban_Board() {
   function updateTask(id: Id, content: string) {
     const prevContent = tasks.find(task => task.id === id)?.content;
     const newTasks = tasks.map(task => {
-        if (task.id !== id) return task;
-        return { ...task, content };
+      if (task.id !== id) return task;
+      return { ...task, content };
     });
-
+    
     setTasks(newTasks);
 
     const updatedTask = newTasks.find(task => task.id === id);
@@ -108,7 +108,7 @@ function Kanban_Board() {
       const newTasks = tasks.filter(task => task.columnId !== id);
       setTasks(newTasks);
 
-      createLog(id, `Column ${columns.find(col => col.id === id)?.title}`, 'deletedColumn');
+      createLog(id, `${columns.find(col => col.id === id)?.title}`, 'deletedColumn');
     }
 }
 
