@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Column, Id, Task } from "../types";
+import { Column, Id, Log, Task } from "../types";
 import { generateKey } from "../utils/generateKey.ts";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
@@ -8,15 +8,21 @@ import Plus_Icon from "./icons/Plus_Icon"
 import Kanban_Column from "./Kanban_Column";
 import { createPortal } from "react-dom";
 import Kanban_Task from "./Kanban_Task";
+import Check_Icon from "./icons/Check_Icon.tsx";
+import Kanban_Logs from "./Kanban_Logs.tsx";
+import { generateId } from "../utils/generateId.ts";
+import { getDateInfo } from "../utils/getDateInfo.ts";
 
 function Kanban_Board() {
 
   const [columns, setColumns] = useState<Column[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [logs, setLogs] = useState<Log[]>([]);
   const columnsId = useMemo(() => columns.map(col => col.id), [columns]);
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [openLogModal, setOpenLogModal] = useState<boolean>(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -27,28 +33,58 @@ function Kanban_Board() {
     })
   )
 
+  function createLog(columnId: Id, content: string, type: string, prevContent?: string, taskId?: Id,) {
+    const newLog: Log = {
+      id: generateId('log'),
+      columnId,
+      taskId,
+      content,
+      type,
+      time: new getDateInfo().getCurrentTime(),
+      date: new getDateInfo().getDateString(),
+      prevContent
+    };
+
+    setLogs([...logs, newLog]);
+  }
+
   function createTask(columnId: Id) {
     const newTask: Task = {
       id: generateKey(),
       columnId,
       content: `Task ${tasks.length + 1}`
-    }
+    };
 
-    setTasks([...tasks, newTask])
+    createLog(newTask.columnId, newTask.content, "createTask", '' , newTask.id);
+
+    setTasks([...tasks, newTask]);
   }
 
   function deleteTask(id: Id) {
-    const filtredTasks = tasks.filter(task => task.id !== id);
-    setTasks(filtredTasks);
+    const deletedTask = tasks.find(task => task.id === id);
+
+    if (deletedTask) {
+      const filteredTasks = tasks.filter(task => task.id !== id);
+      setTasks(filteredTasks);
+
+      createLog(deletedTask.columnId, deletedTask.content, "deleteTask", '', deletedTask.id);
+    }
   }
 
   function updateTask(id: Id, content: string) {
+    const prevContent = tasks.find(task => task.id === id)?.content;
     const newTasks = tasks.map(task => {
-      if(task.id !== id) return task;
-      return {...task, content}
+      if (task.id !== id) return task;
+      return { ...task, content };
     });
-
+    
     setTasks(newTasks);
+
+    const updatedTask = newTasks.find(task => task.id === id);
+
+    if (updatedTask) {
+      createLog(updatedTask.columnId, updatedTask.content, "updateTask", prevContent, updatedTask.id);
+    };
   }
 
   function createNewColumn() {
@@ -57,24 +93,39 @@ function Kanban_Board() {
       title: `Column ${columns.length + 1}`
     }
 
-    setColumns([...columns, columnToAdd])
-  }
-  
-  function deleteColumn(id: Id) {
-    const filtredColumns = columns.filter(col => col.id !== id);
-    setColumns(filtredColumns);
+    setColumns([...columns, columnToAdd]);
 
-    const newTasks = tasks.filter(t => t.columnId !== id);
-    setTasks(newTasks);
+    createLog(columnToAdd.id, columnToAdd.title, "createColumn");
   }
+
+  function deleteColumn(id: Id) {
+    const deletedColumn = columns.find(col => col.id === id);
+
+    if (deletedColumn) {
+      const filteredColumns = columns.filter(col => col.id !== id);
+      setColumns(filteredColumns);
+
+      const newTasks = tasks.filter(task => task.columnId !== id);
+      setTasks(newTasks);
+
+      createLog(id, `${columns.find(col => col.id === id)?.title}`, 'deletedColumn');
+    }
+}
 
   function updateColumn(id: Id, title: string) {
+    const prevContent = columns.find(column => column.id === id)?.title;
     const newColumns = columns.map(col => {
       if(col.id !== id) return col;
       return {...col, title}
     });
 
     setColumns(newColumns);
+
+    const updatedColumn = newColumns.find(col => col.id === id);
+
+    if (updatedColumn) {
+      createLog(updatedColumn.id, updatedColumn.title, "updateColumn", prevContent);
+    };
   }
 
   function onDragStart(event: DragStartEvent) {
@@ -90,44 +141,55 @@ function Kanban_Board() {
   }
 
   function onDragOver(event: DragOverEvent) {
-    const {active, over} = event;
+    const { active, over } = event;
 
-    if(!over) return;
+    if (!over) return;
     const activeId = active.id;
     const overId = over.id;
 
-    if(activeId === overId) return;
+    if (activeId === overId) return;
 
     const isActiveATask = active.data.current?.type === "Task";
     const isOverATask = over.data.current?.type === "Task";
-
-    if(!isActiveATask) return;
-
-    // Droping a task over another task
-    if(isActiveATask && isOverATask) {
-      setTasks(tasks => {
-        const activeIndex = tasks.findIndex(t => t.id === activeId);
-        const overIndex = tasks.findIndex(t => t.id === overId);
-
-        tasks[activeIndex].columnId = tasks[overIndex].columnId
-
-        return arrayMove(tasks, activeIndex, overIndex);
-      })
-    }
-
     const isOverAColumn = over.data.current?.type === "Column";
 
-    // Droping a task over a column
-    if(isActiveATask && isOverAColumn) {
-      setTasks(tasks => {
-        const activeIndex = tasks.findIndex(t => t.id === activeId);
+    // Dropping a task over another task
+    if (isActiveATask && isOverATask) {
+        setTasks(tasks => {
+            const activeIndex = tasks.findIndex(t => t.id === activeId);
+            const overIndex = tasks.findIndex(t => t.id === overId);
 
-        tasks[activeIndex].columnId = overId;
+            const newTasks = tasks.map(task => {
+                if (task.id === activeId) {
+                    return { ...task, columnId: tasks[overIndex].columnId };
+                }
+                return task;
+            });
 
-        return arrayMove(tasks, activeIndex, activeIndex);
-      })
+            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to task "${over.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === overId)?.columnId)?.title}" at`, "dragEnd");
+
+            return arrayMove(newTasks, activeIndex, overIndex);
+        });
     }
-  }
+
+    // Dropping a task over a column
+    if (isActiveATask && isOverAColumn) {
+        setTasks(tasks => {
+
+            const updatedTasks = tasks.map(task => {
+                if (task.id === activeId) {
+                    return { ...task, columnId: overId };
+                }
+                return task;
+            });
+
+            createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to column "${over.data.current?.column.title || 'Unknown Column'}" at`, "dragEnd");
+
+            return updatedTasks;
+        });
+    }
+}
+
 
   function onDragEnd(event: DragEndEvent) {
     setActiveColumn(null);
@@ -141,16 +203,20 @@ function Kanban_Board() {
 
     if(activeId === overId) return;
 
+    if (activeColumn) {
+      createLog(activeId, `Dragged column "${active.data.current?.column.title}" to "${over.data.current?.column.title}" at`, "dragEnd");
+    }
+
     setColumns(columns => {
       const activeColumnIndex = columns.findIndex(col => col.id === activeId);
       const overColumnIndex = columns.findIndex(col => col.id === overId);
 
-      return arrayMove(columns, activeColumnIndex, overColumnIndex)
+      return arrayMove(columns, activeColumnIndex, overColumnIndex);
     })
   }
 
   return (
-    <section className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[4rem]">
+    <section className="m-auto relative flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[4rem]">
       <DndContext 
         onDragStart={onDragStart} 
         onDragEnd={onDragEnd} 
@@ -158,13 +224,24 @@ function Kanban_Board() {
         sensors={sensors}
       >
         <div className="m-auto flex flex-col justify-start gap-4 min-h-[90vh] w-full">
-          <button
-              onClick={() => createNewColumn()}
-              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
-            >
-            <Plus_Icon />
-            Add Column
-          </button>
+          <div className="flex gap-4">
+            <button
+                onClick={() => createNewColumn()}
+                className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+              >
+              <Plus_Icon />
+              Add Column
+            </button>
+            
+            <button
+                onClick={() => setOpenLogModal(true)}
+                className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+              >
+              <Check_Icon />
+              Check Logs
+            </button>
+          </div>
+
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
               {columns.length !== 0 ? columns.map((col) => (
@@ -206,6 +283,14 @@ function Kanban_Board() {
           document.body
         )}
       </DndContext>
+
+      {openLogModal && 
+        <Kanban_Logs
+          logs={logs}
+          setOpenLogModal={setOpenLogModal}
+          columns={columns}
+        />
+      }
     </section>
   )
 }

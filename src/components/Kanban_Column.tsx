@@ -5,6 +5,7 @@ import Trash_icon from "./icons/Trash_icon";
 import { useMemo, useState } from "react";
 import Plus_Icon from "./icons/Plus_Icon";
 import Kanban_Task from "./Kanban_Task";
+import { truncateString } from "../utils/truncateString";
 
 interface Props {
     column: Column;
@@ -34,6 +35,19 @@ interface PropsFooter {
 
 function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn, tasks }: PropsTitle){
 
+    const [title, setTitle] = useState(column.title);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            updateColumn(column.id, title);
+            setEditMode(false);
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+    };
+
     return (
         <nav
             {...attributes}
@@ -41,23 +55,26 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
             onClick={() => setEditMode(true)}
             className="bg-mainBackgroundColor text-2xl h-[6rem] cursor-grab rounded-lg rounded-b-none py-3 px-4 font-bold border-columnBackgroundColor border-4 flex justify-between items-center"
         >
-            <h2 className="flex gap-5 items-center">
+            <h2 className="flex gap-5 items-center" title={column.title}>
                 <span className="flex justify-center items-center bg-columnBackgroundColor px-2 py-1 rounded-lg">
                     {tasks.length}
                 </span>
 
-                {!editMode && column.title}
+                {!editMode && truncateString(column.title, 30)}
                 {editMode && 
                     <input
                         autoFocus
                         type="text"
-                        value={column.title}
-                        onChange={e => updateColumn(column.id, e.target.value)}
-                        onBlur={() => setEditMode(false)}
-                        onKeyDown={e => {
-                            if(e.key !== "Enter") return;
-                            setEditMode(false);
+                        placeholder="Column title here."
+                        value={title}
+                        onChange={handleChange}
+                        onBlur={() => {
+                            if (editMode) {
+                                updateColumn(column.id, title);
+                                setEditMode(false);
+                            }
                         }}
+                        onKeyDown={handleKeyDown}
                         className="bg-black focus:border-rose-500 border rounded outline-none px-2"
                     />
                 }
@@ -93,7 +110,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
     const tasksIds = useMemo(() => {
         return tasks.map(tasks => tasks.id);
     }, [tasks])
-
+    
     const { 
         setNodeRef, 
         attributes, 
