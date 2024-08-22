@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Column, Id, Log, Task } from "../types";
 import { generateKey } from "../utils/generateKey.ts";
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
@@ -23,6 +23,23 @@ function Kanban_Board() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [openLogModal, setOpenLogModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedColumns = localStorage.getItem('columns');
+    const storedTasks = localStorage.getItem('tasks');
+    const storedLogs = localStorage.getItem('logs');
+
+    if (storedColumns) setColumns(JSON.parse(storedColumns));
+    if (storedTasks) setTasks(JSON.parse(storedTasks));
+    if (storedLogs) setLogs(JSON.parse(storedLogs));
+  }, []);
+
+  useEffect(() => {
+
+    localStorage.setItem('columns', JSON.stringify(columns));
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('logs', JSON.stringify(logs));
+  }, [columns, tasks, logs]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
