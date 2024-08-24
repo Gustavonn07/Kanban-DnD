@@ -30,6 +30,10 @@ function Log_Container({ log, columns, index }: PropsContainer) {
         <li
             className={twMerge('p-2 rounded relative shadow-md shadow-[#00000060] w-full max-w-full min-h-[6rem] text-columnBackgroundColor font-medium flex justify-start items-center gap-2 text-2xl ', logStyles[log.type][0] || 'bg-white text-black')}
         >   
+            <span className="absolute top-1 left-3 text-base text-gray-500">
+                {log.date}
+            </span>
+
             <span className="absolute top-1 right-3 text-xl">
                 #{index + 1}
             </span>
