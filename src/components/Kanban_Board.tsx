@@ -71,7 +71,7 @@ function Kanban_Board() {
   )
 
   return (
-    <section className="m-auto relative flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[4rem]">
+    <main className="m-auto relative flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[4rem]">
       <DndContext 
         onDragStart={onDragStart} 
         onDragEnd={onDragEnd} 
@@ -146,7 +146,7 @@ function Kanban_Board() {
           columns={columns}
         />
       }
-    </section>
+    </main>
   )
 }
 
