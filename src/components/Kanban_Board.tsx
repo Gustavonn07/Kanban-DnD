@@ -10,6 +10,8 @@ import Kanban_Task from "./Kanban_Task";
 import Check_Icon from "./icons/Check_Icon.tsx";
 import Kanban_Logs from "./Kanban_Logs.tsx";
 import { KanbanMethods } from "../utils/kanbanMethods.ts";
+import Kanban_Graphics from "./Kanban_Graphics.tsx";
+import Graphic_Icon from "./icons/Graphic_Icon.tsx";
 
 function Kanban_Board() {
 
@@ -21,6 +23,7 @@ function Kanban_Board() {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [openLogModal, setOpenLogModal] = useState<boolean>(false);
+  const [openGraphicsModal, setOpenGraphicsModal] = useState<boolean>(false);
 
   const {
     createNewColumn,
@@ -95,6 +98,14 @@ function Kanban_Board() {
               <Check_Icon />
               Check Logs
             </button>
+            
+            <button
+                onClick={() => setOpenGraphicsModal(true)}
+                className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+              >
+              <Graphic_Icon />
+              Check Graphics
+            </button>
           </div>
 
           <div className="flex gap-4">
@@ -144,6 +155,12 @@ function Kanban_Board() {
           logs={logs}
           setOpenLogModal={setOpenLogModal}
           columns={columns}
+        />
+      }
+
+      {openGraphicsModal && 
+        <Kanban_Graphics
+          setOpenGraphicsModal={setOpenGraphicsModal}
         />
       }
     </main>
