@@ -62,7 +62,7 @@ function Kanban_Board() {
     localStorage.setItem('columns', JSON.stringify(columns));
     localStorage.setItem('tasks', JSON.stringify(tasks));
     localStorage.setItem('logs', JSON.stringify(logs));
-  }, [columns, tasks, logs]);
+  }, [logs]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

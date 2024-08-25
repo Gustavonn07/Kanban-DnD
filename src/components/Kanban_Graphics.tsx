@@ -1,3 +1,5 @@
+import Chart_Bar from "./chart/Chart_Bar";
+import Chart_Pie from "./chart/Chart_Pie";
 import Close_Icon from "./icons/Close_Icon";
 
 interface Props {
@@ -21,11 +23,50 @@ function Kanban_Graphics({ setOpenGraphicsModal }: Props) {
             >
                 <Close_Icon/>
             </button>
-
-            <ul className="flex flex-col gap-6 overflow-y-auto h-full w-2/3 p-10">
-                
+            <ul className="flex gap-5 px-5 overflow-hidden items-center h-full">
+                <li className="w-1/2 h-5/6">
+                <h2 className="flex justify-center items-center w-full py-3 text-4xl font-semibold">Gráficos</h2>
+                    <Chart_Pie
+                        labels={['batata', 'feijao', 'arroz', 'bacon']}
+                        dataLabels={[12, 4, 32, 9]}
+                        colors={{
+                            background: [
+                            '#ff638470',
+                            '#36a2eb70',
+                            '#ffce5670',
+                            '#4bc0c070',
+                            ],
+                            border: [
+                            '#ff6384',
+                            '#36a2eb',
+                            '#ffce56',
+                            '#4bc0c0',
+                            ]
+                        }}
+                    />
+                </li>
+                <li className="w-1/2 h-5/6 flex flex-col justify-between items-center bg-gray-200 rounded-md p-8 shadow-xl shadow-[#00000090]">
+                <h2 className="flex justify-center items-center w-full text-4xl text-mainBackgroundColor font-semibold">Gráficos</h2>
+                    <Chart_Bar
+                        labels={['Jan', 'Feb', 'Mar', 'Apr']}
+                        dataLabels={[10, 20, 30, 40]}
+                        colors={{
+                            background: [
+                            '#ff638470',
+                            '#36a2eb70',
+                            '#ffce5670',
+                            '#4bc0c070',
+                            ],
+                            border: [
+                            '#ff6384',
+                            '#36a2eb',
+                            '#ffce56',
+                            '#4bc0c0',
+                            ]
+                        }}
+                    />
+                </li>
             </ul>
-
         </div>
     </section>
   )
