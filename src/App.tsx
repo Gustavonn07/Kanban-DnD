@@ -1,7 +1,6 @@
-import './style/App.css'
-import Kanban_Board from './components/Kanban_Board'
-import { Toaster } from 'sonner'
-
+import './style/App.css';
+import Kanban_Board from './components/Kanban_Board';
+import { Toaster } from 'sonner';
 
 function App() {
 
@@ -19,4 +18,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

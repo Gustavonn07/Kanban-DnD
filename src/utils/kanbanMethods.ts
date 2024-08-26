@@ -51,7 +51,8 @@ export const KanbanMethods = ({
       const newTask: Task = {
         id: generateKey(),
         columnId,
-        content: `Task ${tasks.length + 1}`
+        content: `Task ${tasks.length + 1}`,
+        createdAt: `${new getDateInfo().getMonthNumber()}`
       };
   
       createLog(newTask.columnId, newTask.content, "createTask", '' , newTask.id);
