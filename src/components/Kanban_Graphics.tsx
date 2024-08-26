@@ -1,54 +1,18 @@
-import { useEffect, useState } from "react";
 import { Column, Task } from "../types";
 import { getColors } from "../utils/getColors";
-import { getDateInfo } from "../utils/getDateInfo";
 import Chart_Bar from "./chart/Chart_Bar";
 import Chart_Pie from "./chart/Chart_Pie";
 import Close_Icon from "./icons/Close_Icon";
-
 interface Props {
     setOpenGraphicsModal: (openGraphicsModal: boolean) => void;
     columns: Column[];
     tasks: Task[];
+    tasksPerMonth: number[];
+    months: string[];
 }
 
-function Kanban_Graphics({ setOpenGraphicsModal, columns, tasks }: Props) {
-    
-    const months = new getDateInfo().getMonthsNames();
-    // PASSAR ISSO -----------------------------------------------------------------------------------------------------------------
-    const initialTasksPerMonth = () => {
-        const savedTasksPerMonth = localStorage.getItem('tasksPerMonth');
-        if (savedTasksPerMonth) {
-            return JSON.parse(savedTasksPerMonth);
-        }
-        return new Array(months.length).fill(0);
-    };
+function Kanban_Graphics({ setOpenGraphicsModal, columns, tasks, tasksPerMonth, months }: Props) {
 
-    const [tasksPerMonth, setTasksPerMonth] = useState<number[]>(initialTasksPerMonth);
-
-    useEffect(() => {
-        const newTasksCountByMonth = months.map((_, index) =>
-            tasks.filter(task => {
-                const taskMonth = new Date(task.createdAt).getMonth();
-                return taskMonth === index;
-            }).length
-        );
-
-        setTasksPerMonth(prevTasksPerMonth => {
-            const updatedTasksPerMonth = prevTasksPerMonth.map((_, index) =>
-                newTasksCountByMonth[index] > prevTasksPerMonth[index] ? newTasksCountByMonth[index] : prevTasksPerMonth[index]
-            );
-
-            updatedTasksPerMonth[new getDateInfo().getMonthNumber() - 1] += 1;
-
-            localStorage.setItem('tasksPerMonth', JSON.stringify(updatedTasksPerMonth));
-
-            return updatedTasksPerMonth;
-        });
-    }, [tasks]);
-    // ATÉ ISSO --------------------------------------------------------------------------------------------------------------------
-    // PARA FORA DO ABRIR O MODAL, POIS SEMPRE QUE O MODAL EH ABERTO O USEEFFECT EH ATIVADO, MAS O USEEFFECT DEVERIA SER TROCADO APENAS QUANDO AS TASKS MUDAM
-    
     const tasksByColumn = columns.map(column => {
         const count = tasks.filter(task => task.columnId === column.id).length;
         return { label: column.title, count };

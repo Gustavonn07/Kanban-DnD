@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react";
 import { Column, Log, Task } from "../types";
-import { DndContext ,DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 
-import Plus_Icon from "./icons/Plus_Icon"
+import Plus_Icon from "./icons/Plus_Icon";
 import Kanban_Column from "./Kanban_Column";
 import { createPortal } from "react-dom";
 import Kanban_Task from "./Kanban_Task";
-import Check_Icon from "./icons/Check_Icon.tsx";
-import Kanban_Logs from "./Kanban_Logs.tsx";
-import { KanbanMethods } from "../utils/kanbanMethods.ts";
-import Kanban_Graphics from "./Kanban_Graphics.tsx";
-import Graphic_Icon from "./icons/Graphic_Icon.tsx";
+import Check_Icon from "./icons/Check_Icon";
+import Kanban_Logs from "./Kanban_Logs";
+import { KanbanMethods } from "../utils/kanbanMethods";
+import Kanban_Graphics from "./Kanban_Graphics";
+import Graphic_Icon from "./icons/Graphic_Icon";
+import { getDateInfo } from "../utils/getDateInfo";
 
 function Kanban_Board() {
 
@@ -24,6 +25,18 @@ function Kanban_Board() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [openLogModal, setOpenLogModal] = useState<boolean>(false);
   const [openGraphicsModal, setOpenGraphicsModal] = useState<boolean>(false);
+
+  const months = new getDateInfo().getMonthsNames();
+    
+  const initialTasksPerMonth = () => {
+    const savedTasksPerMonth = localStorage.getItem('tasksPerMonth');
+    if (savedTasksPerMonth) {
+      return JSON.parse(savedTasksPerMonth);
+    }
+    return new Array(months.length).fill(0);
+  };
+
+  const [tasksPerMonth, setTasksPerMonth] = useState<number[]>(initialTasksPerMonth);
 
   const {
     createNewColumn,
@@ -58,7 +71,6 @@ function Kanban_Board() {
   }, []);
 
   useEffect(() => {
-
     localStorage.setItem('columns', JSON.stringify(columns));
     localStorage.setItem('tasks', JSON.stringify(tasks));
     localStorage.setItem('logs', JSON.stringify(logs));
@@ -67,11 +79,10 @@ function Kanban_Board() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        // define a distancia de arrasto inicial para ele considerar que é um drag-event em 3px
-        distance: 3, 
+        distance: 3, // define a distância de arrasto inicial para considerar que é um drag-event em 3px
       }
     })
-  )
+  );
 
   return (
     <main className="m-auto relative flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[4rem]">
@@ -84,25 +95,25 @@ function Kanban_Board() {
         <div className="m-auto flex flex-col justify-start gap-4 min-h-[90vh] w-full">
           <div className="flex gap-4">
             <button
-                onClick={() => createNewColumn()}
-                className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
-              >
+              onClick={() => createNewColumn()}
+              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+            >
               <Plus_Icon />
               Add Column
             </button>
             
             <button
-                onClick={() => setOpenLogModal(true)}
-                className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
-              >
+              onClick={() => setOpenLogModal(true)}
+              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+            >
               <Check_Icon />
               Check Logs
             </button>
             
             <button
-                onClick={() => setOpenGraphicsModal(true)}
-                className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
-              >
+              onClick={() => setOpenGraphicsModal(true)}
+              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+            >
               <Graphic_Icon />
               Check Graphics
             </button>
@@ -119,32 +130,35 @@ function Kanban_Board() {
                   updateTask={updateTask}
                   createTask={createTask}
                   deleteTask={deleteTask}
-                  tasks={tasks.filter(tasks => tasks.columnId === col.id)}
+                  tasks={tasks.filter(task => task.columnId === col.id)}
+                  setTasksPerMonth={setTasksPerMonth}
+                  months={months}
                 />
-                )) : (
-                  <div className="w-full h-[50rem] bg-columnBackgroundColor flex justify-center items-center rounded">
-                    <p className="text-4xl opacity-20 font-semibold">Create your first column, click at "+ Add column".</p>
-                  </div>
-                )
-              }
+              )) : (
+                <div className="w-full h-[50rem] bg-columnBackgroundColor flex justify-center items-center rounded">
+                  <p className="text-4xl opacity-20 font-semibold">Create your first column, click at "+ Add column".</p>
+                </div>
+              )}
             </SortableContext>
           </div>
         </div>
 
         {createPortal(
           <DragOverlay>
-                {activeColumn && (
-                  <Kanban_Column 
-                    deleteTask={deleteTask} 
-                    createTask={createTask} 
-                    updateTask={updateTask}
-                    column={activeColumn} 
-                    deleteColumn={deleteColumn} 
-                    updateColumn={updateColumn} 
-                    tasks={tasks.filter(tasks => tasks.columnId === activeColumn.id)}
-                  />
-                )}
-                {activeTask && <Kanban_Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask}/>}
+            {activeColumn && (
+              <Kanban_Column 
+                deleteTask={deleteTask} 
+                createTask={createTask} 
+                updateTask={updateTask}
+                column={activeColumn} 
+                deleteColumn={deleteColumn} 
+                updateColumn={updateColumn} 
+                tasks={tasks.filter(task => task.columnId === activeColumn.id)}
+                setTasksPerMonth={setTasksPerMonth}
+                months={months}
+              />
+            )}
+            {activeTask && <Kanban_Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask} />}
           </DragOverlay>,
           document.body
         )}
@@ -163,10 +177,12 @@ function Kanban_Board() {
           setOpenGraphicsModal={setOpenGraphicsModal}
           columns={columns}
           tasks={tasks}
+          tasksPerMonth={tasksPerMonth}
+          months={months}
         />
       }
     </main>
-  )
+  );
 }
 
-export default Kanban_Board
+export default Kanban_Board;
