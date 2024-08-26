@@ -3,6 +3,7 @@ import Kanban_Board from './components/Kanban_Board';
 import { Toaster } from 'sonner';
 
 function App() {
+  // Código autoral de Gustavonn07 - Gustavo Nepomuceno Nogueira
 
   return (
     <>

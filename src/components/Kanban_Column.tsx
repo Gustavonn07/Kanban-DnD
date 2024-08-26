@@ -98,6 +98,15 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
 function Column_Footer({ column, createTask, setTasksPerMonth, tasks, months }: PropsFooter) {
 
     return (
+        // Fazer com que abra um modal usando setOpenTalModal... e dentro do modal por a função de createTask, passando os parametros para a task (corrigir função)
+
+        /**
+         * Alterar: Button para abrir modal.
+         * Adicionar: createTask dentro do modal.
+         * Alterar: função createTask para aceitar parametros.
+         * Alterar: Props necessários.
+         */
+        
         <button
             className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {

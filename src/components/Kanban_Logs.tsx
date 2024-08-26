@@ -85,16 +85,16 @@ function Kanban_Logs({ setOpenLogModal, logs, columns }: Props) {
         setOpenModal={setOpenLogModal}
     >
         <ul className="flex flex-col gap-6 overflow-y-auto h-full w-2/3 p-10">
-                {
-                    logs.map((log, index) => (
-                        <Log_Container 
-                            columns={columns}
-                            log={log}
-                            index={index}
-                        />
-                    ))
-                }
-            </ul>
+            {
+                logs.map((log, index) => (
+                    <Log_Container 
+                        columns={columns}
+                        log={log}
+                        index={index}
+                    />
+                ))
+            }
+        </ul>
     </Kanban_Modal>
   );
 }
