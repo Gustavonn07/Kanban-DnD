@@ -9,6 +9,7 @@ export type Task = {
     id: Id,
     columnId: Id,
     content: string
+    createdAt: string 
 }
 
 export type Log = {

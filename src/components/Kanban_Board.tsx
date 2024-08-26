@@ -161,6 +161,8 @@ function Kanban_Board() {
       {openGraphicsModal && 
         <Kanban_Graphics
           setOpenGraphicsModal={setOpenGraphicsModal}
+          columns={columns}
+          tasks={tasks}
         />
       }
     </main>

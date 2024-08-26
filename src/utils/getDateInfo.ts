@@ -39,6 +39,14 @@ export class getDateInfo {
         return monthNames[this.monthIndex];
     }
 
+    getMonthsNames(): string[] {
+        const monthNames: string[] = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+        return monthNames;
+    }
+
     getDayName(): string {
         const dayNames: string[] = [
             'Sunday', 'Monday', 'Tuesday', 'Wednesday', 
