@@ -2,7 +2,7 @@ import Close_Icon from "./icons/Close_Icon";
 import { ReactNode } from "react";
 
 interface Props {
-    setOpenModal: (openGraphicsModal: boolean) => void;
+    setOpenModal: (openModal: boolean) => void;
     children: ReactNode
 }
 

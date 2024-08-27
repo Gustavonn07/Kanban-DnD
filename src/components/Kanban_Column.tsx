@@ -2,22 +2,19 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
 import { Column, Id, Task } from "../types"
 import Trash_icon from "./icons/Trash_icon";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Plus_Icon from "./icons/Plus_Icon";
 import Kanban_Task from "./Kanban_Task";
 import { truncateString } from "../utils/truncateString";
-import { useTasksPerMonth } from "../hooks/useTasksPerMonth";
 
 interface Props {
     column: Column;
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
-    createTask: (columnId: Id) => void;
     deleteTask: (id: Id) => void;
     updateTask: (id: Id, content: string) => void;
     tasks: Task[];
-    setTasksPerMonth: Dispatch<SetStateAction<number[]>>;
-    months: string[];
+    setOpenModal: (openModal: boolean) => void;
 }
 
 interface PropsTitle {
@@ -32,11 +29,7 @@ interface PropsTitle {
 }
 
 interface PropsFooter {
-    column: Column;
-    createTask: (columnId: Id) => void;
-    setTasksPerMonth: Dispatch<SetStateAction<number[]>>;
-    months: string[];
-    tasks: Task[];
+    setOpenModal: (openModal: boolean) => void;
 }
 
 function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn, tasks }: PropsTitle){
@@ -95,23 +88,15 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
     )
 }
 
-function Column_Footer({ column, createTask, setTasksPerMonth, tasks, months }: PropsFooter) {
+function Column_Footer({ setOpenModal }: PropsFooter) {
 
     return (
-        // Fazer com que abra um modal usando setOpenTalModal... e dentro do modal por a função de createTask, passando os parametros para a task (corrigir função)
 
-        /**
-         * Alterar: Button para abrir modal.
-         * Adicionar: createTask dentro do modal.
-         * Alterar: função createTask para aceitar parametros.
-         * Alterar: Props necessários.
-         */
-        
         <button
             className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {
-                createTask(column.id);
-                useTasksPerMonth({months, tasks, setTasksPerMonth});
+                setOpenModal(true);
+                console.log('oi')
             }}
         >
             <Plus_Icon />
@@ -120,8 +105,7 @@ function Column_Footer({ column, createTask, setTasksPerMonth, tasks, months }: 
     )
 }
 
-function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask, 
-    setTasksPerMonth, months }: Props) {
+function Kanban_Column({ column, deleteColumn, updateColumn, tasks, deleteTask, updateTask, setOpenModal }: Props) {
 
     const [editMode, setEditMode] = useState(false);
     const tasksIds = useMemo(() => {
@@ -183,11 +167,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
             </ul>
 
             <Column_Footer 
-                column={column}
-                createTask={createTask}
-                setTasksPerMonth={setTasksPerMonth}
-                tasks={tasks}
-                months={months}
+                setOpenModal={setOpenModal}
             />
         </section>
     )

@@ -13,6 +13,7 @@ import { KanbanMethods } from "../utils/kanbanMethods";
 import Kanban_Graphics from "./Kanban_Graphics";
 import Graphic_Icon from "./icons/Graphic_Icon";
 import { getDateInfo } from "../utils/getDateInfo";
+import Kanban_Create from "./Kanban_Create";
 
 function Kanban_Board() {
 
@@ -25,6 +26,7 @@ function Kanban_Board() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [openLogModal, setOpenLogModal] = useState<boolean>(false);
   const [openGraphicsModal, setOpenGraphicsModal] = useState<boolean>(false);
+  const [openCreateTaskModal, setOpenCreateTaskModal] = useState<boolean>(false);
 
   const months = new getDateInfo().getMonthsNames();
     
@@ -122,18 +124,29 @@ function Kanban_Board() {
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
               {columns.length !== 0 ? columns.map((col) => (
-                <Kanban_Column
-                  column={col}
-                  key={col.id}
-                  updateColumn={updateColumn}
-                  deleteColumn={deleteColumn}
-                  updateTask={updateTask}
-                  createTask={createTask}
-                  deleteTask={deleteTask}
-                  tasks={tasks.filter(task => task.columnId === col.id)}
-                  setTasksPerMonth={setTasksPerMonth}
-                  months={months}
-                />
+                <div>
+                  <Kanban_Column
+                    column={col}
+                    key={col.id}
+                    updateColumn={updateColumn}
+                    deleteColumn={deleteColumn}
+                    updateTask={updateTask}
+                    deleteTask={deleteTask}
+                    tasks={tasks.filter(task => task.columnId === col.id)}
+                    setOpenModal={setOpenCreateTaskModal}
+                  />
+
+                  {openCreateTaskModal && (
+                    <Kanban_Create 
+                      column={col}
+                      createTask={createTask}
+                      months={months}
+                      setTasksPerMonth={setTasksPerMonth}
+                      tasks={tasks}
+                      setOpenModal={setOpenCreateTaskModal}
+                    />
+                  )}
+                </div>
               )) : (
                 <div className="w-full h-[50rem] bg-columnBackgroundColor flex justify-center items-center rounded">
                   <p className="text-4xl opacity-20 font-semibold">Create your first column, click at "+ Add column".</p>
@@ -146,17 +159,28 @@ function Kanban_Board() {
         {createPortal(
           <DragOverlay>
             {activeColumn && (
-              <Kanban_Column 
-                deleteTask={deleteTask} 
-                createTask={createTask} 
-                updateTask={updateTask}
-                column={activeColumn} 
-                deleteColumn={deleteColumn} 
-                updateColumn={updateColumn} 
-                tasks={tasks.filter(task => task.columnId === activeColumn.id)}
-                setTasksPerMonth={setTasksPerMonth}
-                months={months}
-              />
+              <div>
+                <Kanban_Column 
+                  deleteTask={deleteTask} 
+                  updateTask={updateTask}
+                  column={activeColumn} 
+                  deleteColumn={deleteColumn} 
+                  updateColumn={updateColumn} 
+                  tasks={tasks.filter(task => task.columnId === activeColumn.id)}
+                  setOpenModal={setOpenCreateTaskModal}
+                />
+
+                {openCreateTaskModal && (
+                  <Kanban_Create 
+                    column={activeColumn}
+                    createTask={createTask}
+                    months={months}
+                    setTasksPerMonth={setTasksPerMonth}
+                    tasks={tasks}
+                    setOpenModal={setOpenCreateTaskModal}
+                  />
+                )}
+              </div>
             )}
             {activeTask && <Kanban_Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask} />}
           </DragOverlay>,
