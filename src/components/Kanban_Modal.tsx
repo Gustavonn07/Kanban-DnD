@@ -11,7 +11,7 @@ function Kanban_Modal({ setOpenModal, children }: Props) {
     return (
         <section 
             onClick={() => setOpenModal(false)}
-            className="absolute left-0 w-full h-screen flex justify-center items-center bg-[#00000080]"
+            className="absolute left-0 top-0 w-full h-screen flex justify-center items-center bg-[#00000080]"
         >
             <div
                 onClick={(e) => e.stopPropagation()}

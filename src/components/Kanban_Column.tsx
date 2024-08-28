@@ -96,7 +96,6 @@ function Column_Footer({ setOpenModal }: PropsFooter) {
             className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {
                 setOpenModal(true);
-                console.log('oi')
             }}
         >
             <Plus_Icon />
