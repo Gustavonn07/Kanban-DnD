@@ -19,7 +19,6 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
     const inputs = [
         {
             label: "Título da tarefa",
-            limiteChar: 100,
             type: "text",
             classesInput: "",
             classesLabel: "",
@@ -35,7 +34,6 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
         },
         {
             label: "Responsavel pela tarefa",
-            limiteChar: 100,
             type: "text",
             classesInput: "",
             classesLabel: "",
