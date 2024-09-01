@@ -22,3 +22,8 @@ export type Log = {
     taskId?: Id,
     prevContent?: string
 }
+
+export type Option = {
+    text: string,
+    class: string
+}

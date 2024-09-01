@@ -18,34 +18,49 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
 
     const inputs = [
         {
-            label: "Título da tarefa",
+            label: "Task Title:",
             type: "text",
             classesInput: "",
             classesLabel: "",
-            placeholder: "Insira o titulo"
+            placeholder: "Enter the title"
         },
         {
-            label: "Descrição da tarefa",
+            label: "Task Responsible:",
+            type: "text",
+            classesInput: "",
+            classesLabel: "",
+            placeholder: "Enter the person responsible for the task"
+        },
+        {
+            label: "Task Description:",
             limiteChar: 500,
             type: "area",
             classesInput: "",
             classesLabel: "",
-            placeholder: "Insira a descrição"
-        },
-        {
-            label: "Responsavel pela tarefa",
-            type: "text",
-            classesInput: "",
-            classesLabel: "",
-            placeholder: "Insira o responsavel pela tarefa"
+            placeholder: "Enter the description"
         }
     ];
+
+    const options = [
+        {
+            text: "Low",
+            class: "bg-emerald-400"
+        },
+        {
+            text: "Normal",
+            class: "bg-amber-300"
+        },
+        {
+            text: "Urgent",
+            class: "bg-rose-500"
+        }
+    ]
 
     return (
         <Kanban_Modal
             setOpenModal={setOpenModal}
         >
-            <form className="flex flex-wrap gap-20 px-10 bg-red-200">
+            <form className="grid grid-cols-2 w-full gap-y-10 gap-x-32 px-32 py-16">
                 {
                     inputs.map((input, index) => (
                         <Form_Input
@@ -61,19 +76,30 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                 }
 
                 <Form_Select 
-
+                    title="Priority:"
+                    options={options}
                 />
             </form>
 
-            <button
-                className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 px-8 hover:bg-emerald-300 hover:border-emerald-300 hover:text-mainBackgroundColor active:bg-black duration-150 text-xl font-semibold stroke-2"
-                onClick={() => {
-                    createTask(column.id);
-                    useTasksPerMonth({months, tasks, setTasksPerMonth});
-                }}
-            >
-                Confirm
-            </button>
+            <div className="ml-32 flex gap-10">
+                <button
+                    className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-emerald-300 hover:border-emerald-300 hover:text-mainBackgroundColor active:bg-black duration-150 text-xl font-semibold stroke-2"
+                    onClick={() => {
+                        createTask(column.id);
+                        useTasksPerMonth({months, tasks, setTasksPerMonth});
+                    }}
+                >
+                    Confirm
+                </button>
+                <button
+                    className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
+                    onClick={() => {
+                        setOpenModal(false);
+                    }}
+                >
+                    Cancel
+                </button>
+            </div>
         </Kanban_Modal>
     )
 }

@@ -14,10 +14,10 @@ interface Props {
 function Form_Input({label, type, id, placeholder, classesLabel, classesInput, limiteChar=100 }: Props) {
 
     return (
-        <div className="flex flex-col w-1/3">
+        <div className="flex flex-col w-full">
             <label 
                 htmlFor={`input#${id}`}
-                className={twMerge('pb-2 text-3xl font-semibold', classesLabel)}
+                className={twMerge('pb-6 text-3xl font-semibold', classesLabel)}
             >
                 {label}
             </label>
@@ -30,9 +30,12 @@ function Form_Input({label, type, id, placeholder, classesLabel, classesInput, l
                     placeholder={placeholder}
                 />
             ) : (
-                <>
-                {/* USAR TEXTAREA */}
-                </>
+                <textarea 
+                    name={`input#${id}`} 
+                    id={`input#${id}`} 
+                    rows={15}
+                    className="resize-none rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor p-4"
+                ></textarea>
             )}
             <span
                 className="pt-1 self-end text-lg"
