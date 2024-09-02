@@ -51,7 +51,7 @@ function Form_Input({
             {type === 'textarea' ? (
                 <textarea 
                     id={`input#${id}`} 
-                    rows={15}
+                    rows={20}
                     className={twMerge(
                         'resize-none rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor p-4',
                         classesInput
@@ -59,14 +59,14 @@ function Form_Input({
                     placeholder={placeholder}
                     maxLength={limiteChar}
                     onChange={handleChange}
-                ></textarea>
+                />
             ) : (
                 <input
                     id={`input#${id}`}
                     name={`input#${id}`}
                     type={type}
                     className={twMerge(
-                        'h-16 rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor px-4',
+                        'min-h-16 rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor px-4',
                         classesInput
                     )}
                     placeholder={placeholder}

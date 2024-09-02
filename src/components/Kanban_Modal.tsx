@@ -15,7 +15,7 @@ function Kanban_Modal({ setOpenModal, children }: Props) {
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="w-10/12 relative stroke-2 h-[90vh] rounded shadow-md shadow-[#00000060] bg-mainBackgroundColor"
+                className="w-10/12 relative stroke-2 h-[90vh] rounded shadow-md shadow-[#00000060] bg-slate-900"
             >
                 <button 
                     onClick={() => setOpenModal(false)}

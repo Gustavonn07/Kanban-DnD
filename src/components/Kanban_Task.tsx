@@ -107,7 +107,7 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
       ref={setNodeRef}
       style={style}
       onClick={toggleEditMode}
-      className={twMerge("bg-mainBackgroundColor p-2.5 h-[12.5rem] min-h-[10rem] items-center flex text-left rounded ring-2 hover:ring-inset hover:ring-rose-500 duration-150 cursor-grab text-xl relative", Color.getPriorityColors(content.priority))}
+      className={twMerge("bg-mainBackgroundColor p-2.5 h-[12.5rem] min-h-[10rem] items-center flex text-left rounded ring-2 hover:ring-inset hover:ring-violet-500 duration-150 cursor-grab text-xl relative", Color.getPriorityColors(content.priority))}
       onMouseEnter={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
     >

@@ -36,7 +36,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
         {
             label: "Task Description:",
             limiteChar: 500,
-            type: "area",
+            type: "textarea",
             classesInput: "",
             classesLabel: "",
             typeValue: "desc",
@@ -101,18 +101,18 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                 />
             </form>
 
-            <div className="ml-32 flex gap-10">
-                <button
-                    className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-emerald-300 hover:border-emerald-300 hover:text-mainBackgroundColor active:bg-black duration-150 text-xl font-semibold stroke-2"
-                    onClick={handleConfirm}
-                >
-                    Confirm
-                </button>
+            <div className="absolute right-32 bottom-20 flex gap-10">
                 <button
                     className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
                     onClick={() => setOpenModal(false)}
                 >
                     Cancel
+                </button>
+                <button
+                    className="mt-auto flex gap-2 items-center border-gray-200 bg-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-emerald-300 hover:border-emerald-300 text-mainBackgroundColor active:bg-black duration-150 text-xl font-semibold stroke-2"
+                    onClick={handleConfirm}
+                >
+                    Confirm
                 </button>
             </div>
         </Kanban_Modal>
