@@ -1,6 +1,6 @@
 import { twMerge } from "tailwind-merge";
 import { Column, Log } from "../types";
-import { truncateString } from "../utils/truncateString";
+import { truncateString } from "../utils/getTruncateString";
 import Kanban_Modal from "./Kanban_Modal";
 
 interface Props {

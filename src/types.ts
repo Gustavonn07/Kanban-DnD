@@ -29,6 +29,7 @@ export type Log = {
 }
 
 export type Option = {
+    typeValue: any;
     text: string,
     class: string
 }

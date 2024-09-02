@@ -5,7 +5,7 @@ import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import { generateId } from "../utils/generateId.ts";
 import { getDateInfo } from "../utils/getDateInfo.ts";
 import { toast } from "sonner";
-import { truncateString } from "../utils/truncateString.ts";
+import { truncateString } from "./getTruncateString.ts";
 import { Column, Id, Log, Task } from "../types.ts";
 
 interface Props {
@@ -52,10 +52,10 @@ export const KanbanMethods = ({
           id: generateKey(),
           columnId,
           content: {
-              title: content.title,
-              desc: content.desc,
-              priority: content.priority,
-              respon: content.respon
+            title: content.title,
+            desc: content.desc,
+            priority: content.priority,
+            respon: content.respon
           },
           createdAt: `${new getDateInfo().getMonthNumber()}`
       };

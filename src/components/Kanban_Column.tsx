@@ -5,7 +5,7 @@ import Trash_icon from "./icons/Trash_icon";
 import { useMemo, useState } from "react";
 import Plus_Icon from "./icons/Plus_Icon";
 import Kanban_Task from "./Kanban_Task";
-import { truncateString } from "../utils/truncateString";
+import { truncateString } from "../utils/getTruncateString";
 
 interface Props {
     column: Column;

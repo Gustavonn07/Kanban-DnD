@@ -1,5 +1,5 @@
 import { Column, Task } from "../types";
-import { getColors } from "../utils/getColors";
+import { Colors } from "../utils/getColors";
 import Chart_Bar from "./chart/Chart_Bar";
 import Chart_Pie from "./chart/Chart_Pie";
 import Kanban_Modal from "./Kanban_Modal";
@@ -14,6 +14,8 @@ interface Props {
 
 function Kanban_Graphics({ setOpenGraphicsModal, columns, tasks, tasksPerMonth, months }: Props) {
 
+    const Color = new Colors();
+
     const tasksByColumn = columns.map(column => {
         const count = tasks.filter(task => task.columnId === column.id).length;
         return { label: column.title, count };
@@ -21,7 +23,7 @@ function Kanban_Graphics({ setOpenGraphicsModal, columns, tasks, tasksPerMonth, 
 
     const pieLabels = tasksByColumn.map(item => item.label);
     const pieData = tasksByColumn.map(item => item.count);
-    const colors = getColors(pieLabels.length);
+    const colors = Color.getChartColors(pieLabels.length);
     return (
         <Kanban_Modal
             setOpenModal={setOpenGraphicsModal}
