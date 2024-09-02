@@ -14,6 +14,7 @@ import Kanban_Graphics from "./Kanban_Graphics";
 import Graphic_Icon from "./icons/Graphic_Icon";
 import { getDateInfo } from "../utils/getDateInfo";
 import Kanban_Create from "./Kanban_Create";
+import { useModal } from "../hooks/useModal";
 
 function Kanban_Board() {
 
@@ -24,12 +25,10 @@ function Kanban_Board() {
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [openLogModal, setOpenLogModal] = useState<boolean>(false);
-  const [openGraphicsModal, setOpenGraphicsModal] = useState<boolean>(false);
-  const [openCreateTaskModal, setOpenCreateTaskModal] = useState<boolean>(false);
 
+  const { openModal, open, close } = useModal();
   const months = new getDateInfo().getMonthsNames();
-    
+  
   const initialTasksPerMonth = () => {
     const savedTasksPerMonth = localStorage.getItem('tasksPerMonth');
     if (savedTasksPerMonth) {
@@ -105,7 +104,7 @@ function Kanban_Board() {
             </button>
             
             <button
-              onClick={() => setOpenLogModal(true)}
+              onClick={() => open('log')}
               className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
             >
               <Check_Icon />
@@ -113,7 +112,7 @@ function Kanban_Board() {
             </button>
             
             <button
-              onClick={() => setOpenGraphicsModal(true)}
+              onClick={() => open('graphics')}
               className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
             >
               <Graphic_Icon />
@@ -124,26 +123,25 @@ function Kanban_Board() {
           <div className="flex gap-4">
             <SortableContext items={columnsId}>
               {columns.length !== 0 ? columns.map((col) => (
-                <div>
+                <div key={col.id}>
                   <Kanban_Column
                     column={col}
-                    key={col.id}
                     updateColumn={updateColumn}
                     deleteColumn={deleteColumn}
                     updateTask={updateTask}
                     deleteTask={deleteTask}
                     tasks={tasks.filter(task => task.columnId === col.id)}
-                    setOpenModal={setOpenCreateTaskModal}
+                    setOpenModal={() => open(`createTask ${col.id}`)}
                   />
 
-                  {openCreateTaskModal && (
+                  {openModal === `createTask ${col.id}` && (
                     <Kanban_Create 
                       column={col}
                       createTask={createTask}
                       months={months}
                       setTasksPerMonth={setTasksPerMonth}
                       tasks={tasks}
-                      setOpenModal={setOpenCreateTaskModal}
+                      setOpenModal={() => close()}
                     />
                   )}
                 </div>
@@ -167,17 +165,17 @@ function Kanban_Board() {
                   deleteColumn={deleteColumn} 
                   updateColumn={updateColumn} 
                   tasks={tasks.filter(task => task.columnId === activeColumn.id)}
-                  setOpenModal={setOpenCreateTaskModal}
+                  setOpenModal={() => open(`createTask ${activeColumn.id}`)}
                 />
 
-                {openCreateTaskModal && (
+                {openModal === `createTask ${activeColumn.id}` && (
                   <Kanban_Create 
                     column={activeColumn}
                     createTask={createTask}
                     months={months}
                     setTasksPerMonth={setTasksPerMonth}
                     tasks={tasks}
-                    setOpenModal={setOpenCreateTaskModal}
+                    setOpenModal={() => close()}
                   />
                 )}
               </div>
@@ -188,17 +186,17 @@ function Kanban_Board() {
         )}
       </DndContext>
 
-      {openLogModal && 
+      {openModal === 'log' && 
         <Kanban_Logs
           logs={logs}
-          setOpenLogModal={setOpenLogModal}
+          setOpenLogModal={() => close()}
           columns={columns}
         />
       }
 
-      {openGraphicsModal && 
+      {openModal === 'graphics' && 
         <Kanban_Graphics
-          setOpenGraphicsModal={setOpenGraphicsModal}
+          setOpenGraphicsModal={() => close()}
           columns={columns}
           tasks={tasks}
           tasksPerMonth={tasksPerMonth}

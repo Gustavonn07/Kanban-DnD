@@ -109,7 +109,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, tasks, deleteTask, 
     const [editMode, setEditMode] = useState(false);
     const tasksIds = useMemo(() => {
         return tasks.map(tasks => tasks.id);
-    }, [tasks])
+    }, [tasks]);
     
     const { 
         setNodeRef, 
