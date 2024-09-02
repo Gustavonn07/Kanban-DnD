@@ -13,6 +13,8 @@ interface Props {
   updateTask: (id: Id, content: { title: string; desc: string; respon: string; priority: string }) => void;
 }
 
+// Criar forma de editar
+
 function Kanban_Task({ task, deleteTask, updateTask }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const [editMode, setEditMode] = useState(false);
