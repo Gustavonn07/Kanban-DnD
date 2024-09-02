@@ -9,10 +9,10 @@ import { createPortal } from "react-dom";
 import Kanban_Task from "./Kanban_Task";
 import Check_Icon from "./icons/Check_Icon";
 import Kanban_Logs from "./Kanban_Logs";
-import { KanbanMethods } from "../utils/kanbanMethods";
+import { KanbanMethods } from "../utils/functions/kanbanMethods";
 import Kanban_Graphics from "./Kanban_Graphics";
 import Graphic_Icon from "./icons/Graphic_Icon";
-import { getDateInfo } from "../utils/getDateInfo";
+import { getDateInfo } from "../utils/classes/getDateInfo";
 import Kanban_Create from "./Kanban_Create";
 import { useModal } from "../hooks/useModal";
 

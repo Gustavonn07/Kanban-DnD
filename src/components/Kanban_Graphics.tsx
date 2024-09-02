@@ -1,5 +1,5 @@
 import { Column, Task } from "../types";
-import { Colors } from "../utils/getColors";
+import { Colors } from "../utils/classes/getColors";
 import Chart_Bar from "./chart/Chart_Bar";
 import Chart_Pie from "./chart/Chart_Pie";
 import Kanban_Modal from "./Kanban_Modal";

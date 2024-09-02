@@ -4,8 +4,8 @@ import Trash_icon from "./icons/Trash_icon";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { twMerge } from "tailwind-merge";
-import { Colors } from "../utils/getColors";
-import { truncateString } from "../utils/getTruncateString";
+import { Colors } from "../utils/classes/getColors";
+import { truncateString } from "../utils/functions/getTruncateString";
 
 interface Props {
   task: Task;
