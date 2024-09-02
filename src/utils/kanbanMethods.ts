@@ -47,24 +47,24 @@ export const KanbanMethods = ({
       setLogs([...logs, newLog]);
     }
   
-    function createTask(columnId: Id, title: string, desc: string, respon: string, priority: string) {
+    function createTask(columnId: Id, content: { title: string; desc: string; respon: string; priority: string }) {
       const newTask: Task = {
-        id: generateKey(),
-        columnId,
-        content: {
-          title,
-          desc,
-          priority,
-          respon
-        },
-        createdAt: `${new getDateInfo().getMonthNumber()}`
+          id: generateKey(),
+          columnId,
+          content: {
+              title: content.title,
+              desc: content.desc,
+              priority: content.priority,
+              respon: content.respon
+          },
+          createdAt: `${new getDateInfo().getMonthNumber()}`
       };
   
-      createLog(newTask.columnId, newTask.content.title, "createTask", '' , newTask.id);
+      createLog(newTask.columnId, newTask.content.title, "createTask", '', newTask.id);
   
       setTasks([...tasks, newTask]);
       toast.success('A new Task has been created');
-    }
+  }
   
     function deleteTask(id: Id) {
       const deletedTask = tasks.find(task => task.id === id);
@@ -185,7 +185,7 @@ export const KanbanMethods = ({
                   return task;
               });
   
-              createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to task "${over.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === overId)?.columnId)?.title}" at`, "dragEnd");
+              createLog(activeId, `Dragged task "${active.data.current?.task.content.title}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to task "${over.data.current?.task.content.title}" from column "${columns.find(col => col.id === tasks.find(task => task.id === overId)?.columnId)?.title}" at`, "dragEnd");
   
               toast.success(`The task ${truncateString(active.data.current?.task.content, 12)} has been dragged`);
               return arrayMove(newTasks, activeIndex, overIndex);
@@ -203,7 +203,7 @@ export const KanbanMethods = ({
                   return task;
               });
   
-              createLog(activeId, `Dragged task "${active.data.current?.task.content}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to column "${over.data.current?.column.title || 'Unknown Column'}" at`, "dragEnd");
+              createLog(activeId, `Dragged task "${active.data.current?.task.content.title}" from column "${columns.find(col => col.id === tasks.find(task => task.id === activeId)?.columnId)?.title || 'Unknown Column'}" to column "${over.data.current?.column.title || 'Unknown Column'}" at`, "dragEnd");
               
               toast.success(`The task ${truncateString(active.data.current?.task.content, 12)} has been dragged`);
               return updatedTasks;
@@ -237,15 +237,15 @@ export const KanbanMethods = ({
     }
   
   return {
-      createNewColumn,
-      createTask,
-      deleteColumn,
-      deleteTask,
-      onDragEnd,
-      onDragOver,
-      onDragStart,
-      updateColumn,
-      updateTask
+    createNewColumn,
+    createTask,
+    deleteColumn,
+    deleteTask,
+    onDragEnd,
+    onDragOver,
+    onDragStart,
+    updateColumn,
+    updateTask
   }
 }
   

@@ -7,8 +7,8 @@ interface Props {
     typeValue: "title" | "responsible" | "description" | "priority" | string;
     setValue: Dispatch<SetStateAction<{
         title: string;
-        responsible: string;
-        description: string;
+        respon: string;
+        desc: string;
         priority: string;
     }>>;
     type: string;
@@ -19,6 +19,7 @@ interface Props {
     limiteChar?: number;
 }
 
+// Criar forma de dar required antes de enviar / alem de usar o limiteChar
 function Form_Input({
     label,
     typeValue,
