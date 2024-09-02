@@ -12,7 +12,7 @@ interface Props {
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
     deleteTask: (id: Id) => void;
-    updateTask: (id: Id, content: string) => void;
+    updateTask: (id: Id, content: { title: string; desc: string; respon: string; priority: string }) => void;
     tasks: Task[];
     setOpenModal: (openModal: boolean) => void;
 }

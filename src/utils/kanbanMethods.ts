@@ -78,29 +78,26 @@ export const KanbanMethods = ({
       }
     }
   
-    function updateTask(id: Id) {
+    function updateTask(id: Id, content: { title: string; desc: string; respon: string; priority: string }) {
       const prevContent = tasks.find(task => task.id === id)?.content;
       const newTasks = tasks.map(task => {
         if (task.id !== id) return task;
         return { 
           ...task,
           content: {
-            title: task.content.title,
-            desc: task.content.desc,
-            priority: task.content.priority,
-            respon: task.content.respon
+            ...content
           }
         };
       });
       
       setTasks(newTasks);
-  
+    
       const updatedTask = newTasks.find(task => task.id === id);
-  
+      
       if (updatedTask) {
         createLog(updatedTask.columnId, updatedTask.content.title, "updateTask", prevContent?.title, updatedTask.id);
-        toast.success(`Task ${truncateString(updatedTask.content, 12)} has been changed`);
-      };
+        toast.success(`Task ${truncateString(updatedTask.content.title, 12)} has been changed`);
+      }
     }
   
     function createNewColumn() {

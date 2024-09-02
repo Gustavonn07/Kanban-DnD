@@ -74,7 +74,6 @@ function Form_Input({
                 />
             )}
             <span className="pt-1 self-end text-lg">
-                {/* {`${Math.min(limiteChar, (type === 'textarea' ? (document.getElementById(`input#${id}`) as HTMLTextAreaElement)?.value.length : (document.getElementById(`input#${id}`) as HTMLInputElement)?.value.length))} / ${limiteChar}`} */}
                 00/{limiteChar}
             </span>
         </div>

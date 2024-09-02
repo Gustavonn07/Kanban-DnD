@@ -1,6 +1,13 @@
-export function truncateString(str: string | any, length: number) {
-    
-    if (str.length > length) {
-        return str.substring(0, length) + '...';
-    } else return str;
-};
+export function truncateString(str: string | undefined, length: number | null) {
+    if (typeof str !== 'string') {
+        return '';
+    }
+
+    const maxLength = length ?? 0;
+
+    if (str.length > maxLength) {
+        return str.substring(0, maxLength) + '...';
+    } else {
+        return str;
+    }
+}
