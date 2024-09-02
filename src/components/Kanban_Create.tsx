@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { Column, Id, Task } from "../types";
+import { Dispatch, SetStateAction, useState } from "react";
+import { Column, Task } from "../types";
 import { useTasksPerMonth } from "../hooks/useTasksPerMonth";
 import Kanban_Modal from "./Kanban_Modal";
 import Form_Input from "./form/Form_Input";
@@ -7,7 +7,7 @@ import Form_Select from "./form/Form_Select";
 
 interface Props {
     column: Column;
-    createTask: (columnId: Id) => void;
+    createTask: (task: Task) => void;
     setTasksPerMonth: Dispatch<SetStateAction<number[]>>;
     setOpenModal: (openModal: boolean) => void;
     months: string[];
@@ -22,6 +22,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
             type: "text",
             classesInput: "",
             classesLabel: "",
+            typeValue: "title",
             placeholder: "Enter the title"
         },
         {
@@ -29,6 +30,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
             type: "text",
             classesInput: "",
             classesLabel: "",
+            typeValue: "responsible",
             placeholder: "Enter the person responsible for the task"
         },
         {
@@ -37,6 +39,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
             type: "area",
             classesInput: "",
             classesLabel: "",
+            typeValue: "description",
             placeholder: "Enter the description"
         }
     ];
@@ -56,6 +59,33 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
         }
     ]
 
+    const [taskValues, setTaskValues] = useState({
+        title: '',
+        responsible: '',
+        description: '',
+        priority: 'Low'
+    });
+
+    const handleConfirm = () => {
+        const newTask: Task = {
+            id: Date.now().toString(),
+            columnId: column.id,
+            content: {
+                title: taskValues.title,
+                desc: taskValues.description,
+                respon: taskValues.responsible,
+                priority: taskValues.priority
+            },
+            createdAt: new Date().toISOString()
+        };
+
+        createTask(newTask);
+        
+        useTasksPerMonth({months, tasks: [...tasks, newTask], setTasksPerMonth});
+        
+        setOpenModal(false);
+    };
+
     return (
         <Kanban_Modal
             setOpenModal={setOpenModal}
@@ -64,7 +94,10 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                 {
                     inputs.map((input, index) => (
                         <Form_Input
+                            key={index}
                             id={index}
+                            typeValue={input.typeValue}
+                            setValue={setTaskValues}
                             label={input.label}
                             limiteChar={input.limiteChar}
                             type={input.type}
@@ -84,10 +117,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
             <div className="ml-32 flex gap-10">
                 <button
                     className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-emerald-300 hover:border-emerald-300 hover:text-mainBackgroundColor active:bg-black duration-150 text-xl font-semibold stroke-2"
-                    onClick={() => {
-                        createTask(column.id);
-                        useTasksPerMonth({months, tasks, setTasksPerMonth});
-                    }}
+                    onClick={() => handleConfirm()}
                 >
                     Confirm
                 </button>

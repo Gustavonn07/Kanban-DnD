@@ -1,17 +1,43 @@
-import { twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge";
 import { Id } from "../../types";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
     label: string;
+    typeValue: "title" | "responsible" | "description" | "priority" | string;
+    setValue: Dispatch<SetStateAction<{
+        title: string;
+        responsible: string;
+        description: string;
+        priority: string;
+    }>>;
     type: string;
     id: Id; 
     classesLabel?: string;
     classesInput?: string;
     placeholder?: string;
-    limiteChar?: number
+    limiteChar?: number;
 }
 
-function Form_Input({label, type, id, placeholder, classesLabel, classesInput, limiteChar=100 }: Props) {
+function Form_Input({
+    label,
+    typeValue,
+    setValue,
+    type,
+    id,
+    placeholder,
+    classesLabel,
+    classesInput,
+    limiteChar = 100
+}: Props) {
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const value = e.target.value;
+        setValue(prev => ({
+            ...prev,
+            [typeValue]: value
+        }));
+    };
 
     return (
         <div className="flex flex-col w-full">
@@ -21,30 +47,38 @@ function Form_Input({label, type, id, placeholder, classesLabel, classesInput, l
             >
                 {label}
             </label>
-            {!(type === 'area') ? ( 
+            {type === 'textarea' ? (
+                <textarea 
+                    id={`input#${id}`} 
+                    rows={15}
+                    className={twMerge(
+                        'resize-none rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor p-4',
+                        classesInput
+                    )}
+                    placeholder={placeholder}
+                    maxLength={limiteChar}
+                    onChange={handleChange}
+                ></textarea>
+            ) : (
                 <input
                     id={`input#${id}`}
                     name={`input#${id}`}
                     type={type}
-                    className={twMerge('h-16 rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor px-4', classesInput)}
+                    className={twMerge(
+                        'h-16 rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor px-4',
+                        classesInput
+                    )}
                     placeholder={placeholder}
+                    maxLength={limiteChar}
+                    onChange={handleChange}
                 />
-            ) : (
-                <textarea 
-                    name={`input#${id}`} 
-                    id={`input#${id}`} 
-                    rows={15}
-                    className="resize-none rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor p-4"
-                ></textarea>
             )}
-            <span
-                className="pt-1 self-end text-lg"
-            >
-                {/* inserir calculo de limite de caracteres */}
-                00 / {limiteChar}
+            <span className="pt-1 self-end text-lg">
+                {/* {`${Math.min(limiteChar, (type === 'textarea' ? (document.getElementById(`input#${id}`) as HTMLTextAreaElement)?.value.length : (document.getElementById(`input#${id}`) as HTMLInputElement)?.value.length))} / ${limiteChar}`} */}
+                00/{limiteChar}
             </span>
         </div>
-    )
+    );
 }
 
-export default Form_Input
+export default Form_Input;

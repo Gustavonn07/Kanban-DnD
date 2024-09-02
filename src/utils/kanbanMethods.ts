@@ -47,15 +47,20 @@ export const KanbanMethods = ({
       setLogs([...logs, newLog]);
     }
   
-    function createTask(columnId: Id) {
+    function createTask(columnId: Id, title: string, desc: string, respon: string, priority: string) {
       const newTask: Task = {
         id: generateKey(),
         columnId,
-        content: `Task ${tasks.length + 1}`,
+        content: {
+          title,
+          desc,
+          priority,
+          respon
+        },
         createdAt: `${new getDateInfo().getMonthNumber()}`
       };
   
-      createLog(newTask.columnId, newTask.content, "createTask", '' , newTask.id);
+      createLog(newTask.columnId, newTask.content.title, "createTask", '' , newTask.id);
   
       setTasks([...tasks, newTask]);
       toast.success('A new Task has been created');
@@ -68,16 +73,24 @@ export const KanbanMethods = ({
         const filteredTasks = tasks.filter(task => task.id !== id);
         setTasks(filteredTasks);
   
-        createLog(deletedTask.columnId, deletedTask.content, "deleteTask", '', deletedTask.id);
-        toast.success(`Task ${truncateString(deletedTask.content, 12)} has been deleted`);
+        createLog(deletedTask.columnId, deletedTask.content.title, "deleteTask", '', deletedTask.id);
+        toast.success(`Task ${truncateString(deletedTask.content.title, 12)} has been deleted`);
       }
     }
   
-    function updateTask(id: Id, content: string) {
+    function updateTask(id: Id) {
       const prevContent = tasks.find(task => task.id === id)?.content;
       const newTasks = tasks.map(task => {
         if (task.id !== id) return task;
-        return { ...task, content };
+        return { 
+          ...task,
+          content: {
+            title: task.content.title,
+            desc: task.content.desc,
+            priority: task.content.priority,
+            respon: task.content.respon
+          }
+        };
       });
       
       setTasks(newTasks);
@@ -85,7 +98,7 @@ export const KanbanMethods = ({
       const updatedTask = newTasks.find(task => task.id === id);
   
       if (updatedTask) {
-        createLog(updatedTask.columnId, updatedTask.content, "updateTask", prevContent, updatedTask.id);
+        createLog(updatedTask.columnId, updatedTask.content.title, "updateTask", prevContent?.title, updatedTask.id);
         toast.success(`Task ${truncateString(updatedTask.content, 12)} has been changed`);
       };
     }

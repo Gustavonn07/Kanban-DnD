@@ -8,7 +8,12 @@ export type Column = {
 export type Task = {
     id: Id,
     columnId: Id,
-    content: string
+    content: {
+        title: string,
+        desc: string,
+        respon: string,
+        priority: string
+    }
     createdAt: string 
 }
 
