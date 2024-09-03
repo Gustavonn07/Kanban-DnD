@@ -80,7 +80,7 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
             </h2>
             <button
                 onClick={() => deleteColumn(column.id)}
-                className="stroke-gray-500 hover:stroke-white hover:bg-columnBackgroundColor rounded px-1 py-2"
+                className="stroke-gray-500 hover:stroke-rose-600 hover:bg-columnBackgroundColor rounded px-1 py-2"
             >
                 <Trash_icon />
             </button>
@@ -93,7 +93,7 @@ function Column_Footer({ setOpenModal }: PropsFooter) {
     return (
 
         <button
-            className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
+            className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-violet-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {
                 setOpenModal(true);
             }}

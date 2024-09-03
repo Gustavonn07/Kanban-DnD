@@ -6,6 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { twMerge } from "tailwind-merge";
 import { Colors } from "../utils/classes/getColors";
 import { truncateString } from "../utils/functions/getTruncateString";
+import Edit_Icon from "./icons/Edit_Icon";
 
 interface Props {
   task: Task;
@@ -55,6 +56,7 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
   };
 
   function toggleEditMode() {
+    // Mudar editMode
     setEditMode(prev => !prev);
     setMouseIsOver(false);
     if (!editMode) {
@@ -106,14 +108,17 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
       {...listeners}
       ref={setNodeRef}
       style={style}
-      onClick={toggleEditMode}
-      className={twMerge("bg-mainBackgroundColor p-2.5 h-[12.5rem] min-h-[10rem] items-center flex text-left rounded ring-2 hover:ring-inset hover:ring-violet-500 duration-150 cursor-grab text-xl relative", Color.getPriorityColors(content.priority))}
+      className={twMerge("bg-mainBackgroundColor p-2.5 h-[12.5rem] active:h-[30rem] focus:h-[30rem] flex text-left rounded ring-2 hover:ring-inset hover:ring-violet-500 duration-150 cursor-grab text-xl relative", Color.getPriorityColors(content.priority))}
       onMouseEnter={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
     >
-      <article className="flex flex-col justify-between h-full w-full p-2 overflow-y-auto overflow-x-hidden whitespace-normal">
+      <article className="relative flex flex-col justify-between h-full w-full p-2 overflow-y-auto overflow-x-hidden whitespace-normal">
         <h5 className="text-2xl font-semibold">{content.title}</h5>
-        <p className="">{truncateString(content.desc, 50)}</p>
+        <p
+          className="text-xl py-4 overflow-x-hidden overflow-y-auto"
+        >
+          {content.desc}
+        </p>
 
         <div className="flex justify-between">
           <p className="text-lg">Responsible: {content.respon}</p>
@@ -122,12 +127,27 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
       </article>
 
       {mouseIsOver && (
-        <button 
-          className="stroke-white absolute right-4 top-1/2 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100"
-          onClick={() => deleteTask(task.id)}
-        >
-          <Trash_icon />
-        </button>
+        <>
+          <button
+            className="stroke-white absolute right-4 top-10 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100 hover:stroke-rose-600"
+            onClick={(e) => {
+              deleteTask(task.id)
+              e.stopPropagation()
+            }}
+          >
+            <Trash_icon />
+          </button>
+
+          <button
+            className="stroke-white absolute right-20 top-10 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100"
+            onClick={(e) => {
+              toggleEditMode
+              e.stopPropagation()
+            }}
+          >
+            <Edit_Icon />
+          </button>
+        </>
       )}
     </li>
   );

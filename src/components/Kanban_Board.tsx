@@ -15,6 +15,7 @@ import Graphic_Icon from "./icons/Graphic_Icon";
 import { getDateInfo } from "../utils/classes/getDateInfo";
 import Kanban_Create from "./Kanban_Create";
 import { useModal } from "../hooks/useModal";
+import Button from "./Button";
 
 function Kanban_Board() {
 
@@ -95,29 +96,28 @@ function Kanban_Board() {
       >
         <div className="m-auto flex flex-col justify-start gap-4 min-h-[90vh] w-full">
           <div className="flex gap-4">
-            <button
-              onClick={() => createNewColumn()}
-              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+            {/* Criar componente button */}
+            
+            <Button
+              handler={() => createNewColumn()}
             >
               <Plus_Icon />
               Add Column
-            </button>
+            </Button>
             
-            <button
-              onClick={() => open('log')}
-              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+            <Button
+              handler={() => open('log')}
             >
               <Check_Icon />
               Check Logs
-            </button>
+            </Button>
             
-            <button
-              onClick={() => open('graphics')}
-              className="h-[6rem] w-[35rem] min-w-[35rem] justify-center items-center stroke-2 text-2xl cursor-pointer rounded-lg bg-mainBackgroundColor border-2 border-columnBackgroundColor ring-rose-500 hover:ring-2 duration-150 p-4 flex gap-2"
+            <Button
+              handler={() => open('graphics')}
             >
               <Graphic_Icon />
               Check Graphics
-            </button>
+            </Button>
           </div>
 
           <div className="flex gap-4">
