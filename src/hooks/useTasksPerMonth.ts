@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { Task } from "../types";
-import { getDateInfo } from "../utils/getDateInfo";
+import { getDateInfo } from "../utils/classes/getDateInfo";
 
 interface Props {
     months: string[];

@@ -3,6 +3,7 @@ import Kanban_Board from './components/Kanban_Board';
 import { Toaster } from 'sonner';
 
 function App() {
+  // Código autoral de Gustavonn07 - Gustavo Nepomuceno Nogueira
 
   return (
     <>
@@ -10,7 +11,8 @@ function App() {
       <Toaster
         toastOptions={{
             classNames: {
-            success: 'bg-green-400 border-columnBackgroundColor'
+            success: 'bg-green-400 border-columnBackgroundColor',
+            error: 'bg-rose-500 border-columnBackgroundColor text-gray-200'
           }
         }}
       />

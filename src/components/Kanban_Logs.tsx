@@ -1,12 +1,15 @@
 import { twMerge } from "tailwind-merge";
 import { Column, Log } from "../types";
-import { truncateString } from "../utils/truncateString";
+import { truncateString } from "../utils/functions/getTruncateString";
 import Kanban_Modal from "./Kanban_Modal";
+import { useModal } from "../hooks/useModal";
+import Delete_Modal from "./geral.Delete_Modal";
 
 interface Props {
     setOpenLogModal: (openLogModal: boolean) => void;
     logs: Log[];
     columns: Column[];
+    deleteLogs: () => void
 };
 
 interface PropsContainer {
@@ -78,25 +81,48 @@ function Log_Container({ log, columns, index }: PropsContainer) {
     );
   }
 
-function Kanban_Logs({ setOpenLogModal, logs, columns }: Props) {
+function Kanban_Logs({ setOpenLogModal, logs, columns, deleteLogs }: Props) {
 
-  return (
-    <Kanban_Modal
-        setOpenModal={setOpenLogModal}
-    >
-        <ul className="flex flex-col gap-6 overflow-y-auto h-full w-2/3 p-10">
-                {
-                    logs.map((log, index) => (
-                        <Log_Container 
-                            columns={columns}
-                            log={log}
-                            index={index}
-                        />
-                    ))
-                }
-            </ul>
-    </Kanban_Modal>
-  );
+    const { openModal, open, close } = useModal();
+
+    return (
+        <>
+            <Kanban_Modal
+                setOpenModal={setOpenLogModal}
+            >
+                <button
+                    type="button"
+                    onClick={(e) => {
+                    e.preventDefault();
+                    open("deleteLog");
+                    }}
+                    className="absolute right-10 bottom-10 flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
+                >
+                    Delete all logs
+                </button>
+                
+                <ul className="flex flex-col gap-6 overflow-y-auto h-full w-3/4 p-10">
+                    {
+                        logs.map((log, index) => (
+                            <Log_Container 
+                                columns={columns}
+                                log={log}
+                                index={index}
+                            />
+                        ))
+                    }
+                </ul>
+            </Kanban_Modal>
+
+            {openModal === "deleteLog" && 
+                <Delete_Modal 
+                close={() => close()}
+                content={`Do you wish to delete all logs?`}
+                handleDelete={() => deleteLogs()}
+                />
+            }
+        </>
+    );
 }
 
 export default Kanban_Logs

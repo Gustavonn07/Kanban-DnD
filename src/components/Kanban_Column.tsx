@@ -2,22 +2,21 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities"
 import { Column, Id, Task } from "../types"
 import Trash_icon from "./icons/Trash_icon";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Plus_Icon from "./icons/Plus_Icon";
 import Kanban_Task from "./Kanban_Task";
-import { truncateString } from "../utils/truncateString";
-import { useTasksPerMonth } from "../hooks/useTasksPerMonth";
+import { truncateString } from "../utils/functions/getTruncateString";
+import { useModal } from "../hooks/useModal";
+import Delete_Modal from "./geral.Delete_Modal";
 
 interface Props {
     column: Column;
     deleteColumn: (id: Id) => void;
     updateColumn: (id: Id, title: string) => void;
-    createTask: (columnId: Id) => void;
     deleteTask: (id: Id) => void;
-    updateTask: (id: Id, content: string) => void;
+    updateTask: (id: Id, content: { title: string; desc: string; respon: string; priority: string }) => void;
     tasks: Task[];
-    setTasksPerMonth: Dispatch<SetStateAction<number[]>>;
-    months: string[];
+    setOpenModal: (openModal: boolean) => void;
 }
 
 interface PropsTitle {
@@ -32,16 +31,13 @@ interface PropsTitle {
 }
 
 interface PropsFooter {
-    column: Column;
-    createTask: (columnId: Id) => void;
-    setTasksPerMonth: Dispatch<SetStateAction<number[]>>;
-    months: string[];
-    tasks: Task[];
+    setOpenModal: (openModal: boolean) => void;
 }
 
 function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode, editMode, updateColumn, tasks }: PropsTitle){
 
     const [title, setTitle] = useState(column.title);
+    const { openModal, open, close } = useModal();
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -58,11 +54,13 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
         <nav
             {...attributes}
             {...listeners}
-            onClick={() => setEditMode(true)}
             className="bg-mainBackgroundColor text-2xl h-[6rem] cursor-grab rounded-lg rounded-b-none py-3 px-4 font-bold border-columnBackgroundColor border-4 flex justify-between items-center"
         >
-            <h2 className="flex gap-5 items-center" title={column.title}>
-                <span className="flex justify-center items-center bg-columnBackgroundColor px-2 py-1 rounded-lg">
+            <h2 
+                className="flex gap-5 w-4/5 items-center cursor-pointer" title={column.title}
+                onClick={() => setEditMode(true)}
+            >
+                <span className="flex justify-center items-center px-2 py-1 rounded-lg">
                     {tasks.length}
                 </span>
 
@@ -81,28 +79,40 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
                             }
                         }}
                         onKeyDown={handleKeyDown}
-                        className="bg-black focus:border-rose-500 border rounded outline-none px-2"
+                        className="bg-black focus:border-rose-500 border rounded w-11/12 outline-none px-2"
                     />
                 }
             </h2>
+
             <button
-                onClick={() => deleteColumn(column.id)}
-                className="stroke-gray-500 hover:stroke-white hover:bg-columnBackgroundColor rounded px-1 py-2"
+                onClick={(e) => {
+                    e.preventDefault();
+                    open('deleteColumn');
+                }}
+                className="stroke-gray-500 duration-150 hover:stroke-rose-600 hover:bg-columnBackgroundColor rounded px-1 py-2"
             >
                 <Trash_icon />
             </button>
+
+            {openModal === "deleteColumn" && 
+                <Delete_Modal
+                    close={() => close()}
+                    content={`Do you wish delete the column ${column.title}?`}
+                    handleDelete={() => deleteColumn(column.id)}
+                />
+            }
         </nav>
     )
 }
 
-function Column_Footer({ column, createTask, setTasksPerMonth, tasks, months }: PropsFooter) {
+function Column_Footer({ setOpenModal }: PropsFooter) {
 
     return (
+
         <button
-            className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
+            className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-violet-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {
-                createTask(column.id);
-                useTasksPerMonth({months, tasks, setTasksPerMonth});
+                setOpenModal(true);
             }}
         >
             <Plus_Icon />
@@ -111,13 +121,12 @@ function Column_Footer({ column, createTask, setTasksPerMonth, tasks, months }: 
     )
 }
 
-function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask, 
-    setTasksPerMonth, months }: Props) {
+function Kanban_Column({ column, deleteColumn, updateColumn, tasks, deleteTask, updateTask, setOpenModal }: Props) {
 
     const [editMode, setEditMode] = useState(false);
     const tasksIds = useMemo(() => {
         return tasks.map(tasks => tasks.id);
-    }, [tasks])
+    }, [tasks]);
     
     const { 
         setNodeRef, 
@@ -174,11 +183,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, createTask, tasks, 
             </ul>
 
             <Column_Footer 
-                column={column}
-                createTask={createTask}
-                setTasksPerMonth={setTasksPerMonth}
-                tasks={tasks}
-                months={months}
+                setOpenModal={setOpenModal}
             />
         </section>
     )
