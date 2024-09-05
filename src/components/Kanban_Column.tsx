@@ -57,7 +57,7 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
             className="bg-mainBackgroundColor text-2xl h-[6rem] cursor-grab rounded-lg rounded-b-none py-3 px-4 font-bold border-columnBackgroundColor border-4 flex justify-between items-center"
         >
             <h2 
-                className="flex gap-5 w-4/5 items-center cursor-pointer" title={column.title}
+                className="flex gap-5 w-4/5 items-center cursor-pointer" title={truncateString(column.title, 20)}
                 onClick={() => setEditMode(true)}
             >
                 <span className="flex justify-center items-center px-2 py-1 rounded-lg">
@@ -97,7 +97,7 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
             {openModal === "deleteColumn" && 
                 <Delete_Modal
                     close={() => close()}
-                    content={`Do you wish delete the column ${column.title}?`}
+                    content={`Do you wish delete the column ${truncateString(column.title, 10)}?`}
                     handleDelete={() => deleteColumn(column.id)}
                 />
             }

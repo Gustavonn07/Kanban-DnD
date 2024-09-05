@@ -11,6 +11,7 @@ import Form_Select from "./form/Form_Select";
 import { inputs, options } from "./assets/tasks.inputs";
 import { useModal } from "../hooks/useModal";
 import Delete_Modal from "./geral.Delete_Modal";
+import { truncateString } from "../utils/functions/getTruncateString";
 
 interface Props {
   task: Task;
@@ -134,10 +135,10 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
           
         ) : (
           <article className="relative flex flex-col justify-between h-full w-full p-2 overflow-y-auto overflow-x-hidden whitespace-normal">
-            <h5 className="text-2xl font-semibold">{content.title}</h5>
+            <h5 className="text-2xl font-semibold">{truncateString(content.title, 26)}</h5>
             <p className="text-xl py-4 overflow-x-hidden overflow-y-auto">{content.desc}</p>
             <div className="flex justify-between">
-              <p className="text-lg">Responsible: {content.respon}</p>
+              <p className="text-lg">Responsible: {truncateString(content.respon, 15)}</p>
               <p className="text-lg">Priority: {content.priority}</p>
             </div>
           </article>
@@ -171,7 +172,7 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
       {openModal === "deleteTask" && 
         <Delete_Modal 
           close={() => close()}
-          content={`Do you wish to delete ${task.content.title}?`}
+          content={`Do you wish to delete ${truncateString(task.content.title, 12)}?`}
           handleDelete={() => deleteTask(task.id)}
         />
       }
