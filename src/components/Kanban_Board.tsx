@@ -15,7 +15,8 @@ import Graphic_Icon from "./icons/Graphic_Icon";
 import { getDateInfo } from "../utils/classes/getDateInfo";
 import Kanban_Create from "./Kanban_Create";
 import { useModal } from "../hooks/useModal";
-import Button from "./Button";
+import Button from "./geral.Button";
+import Kanban_Modal from "./Kanban_Modal";
 
 function Kanban_Board() {
 
@@ -24,6 +25,7 @@ function Kanban_Board() {
   const [logs, setLogs] = useState<Log[]>([]);
   const columnsId = useMemo(() => columns.map(col => col.id), [columns]);
 
+  const [columnTitle, setColumnTitle] = useState<string>("new Column");
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
@@ -96,10 +98,8 @@ function Kanban_Board() {
       >
         <div className="m-auto flex flex-col justify-start gap-4 min-h-[90vh] w-full">
           <div className="flex gap-4">
-            {/* Criar componente button */}
-            
             <Button
-              handler={() => createNewColumn()}
+              handler={() => open('column')}
             >
               <Plus_Icon />
               Add Column
@@ -185,6 +185,42 @@ function Kanban_Board() {
           document.body
         )}
       </DndContext>
+
+      {openModal === 'column' && 
+        <Kanban_Modal
+          setOpenModal={() => close()}
+          classDiv="w-1/4 h-1/3 -translate-y-3/4"
+        >
+          <div className="flex flex-col w-full h-full justify-center px-12 gap-10">
+            <label
+              htmlFor="columnInpt"
+              className="text-3xl font-semibold"
+            >
+              Create new column:
+            </label>
+
+            <input
+              type="text"
+              id="columnInpt"
+              className="min-h-16 rounded text-xl outline-none hover:shadow-[#00000090] hover:shadow-lg hover:scale-[100.5%] focus:shadow-[#00000090] focus:shadow-lg focus:scale-[100.5%] duration-150 text-mainBackgroundColor px-4"
+              placeholder="Column name"
+              onChange={e => setColumnTitle(e.target.value)}
+            />
+
+            <button
+              className="flex gap-2 items-center border-gray-200 bg-gray-200 border-2 rounded-md py-2 px-4 max-w-28 justify-center hover:bg-emerald-300 hover:border-emerald-300 text-mainBackgroundColor active:bg-black duration-150 text-xl font-semibold stroke-2"
+              onClick={() => {
+                  createNewColumn(columnTitle);
+                  setColumnTitle("New column");
+                  close();
+                }
+              }
+            >
+              Confirm
+            </button>
+          </div>
+        </Kanban_Modal>
+      }
 
       {openModal === 'log' && 
         <Kanban_Logs

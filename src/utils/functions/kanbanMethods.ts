@@ -100,10 +100,10 @@ export const KanbanMethods = ({
     }
   }
   
-  function createNewColumn() {
+  function createNewColumn(title: string) {
     const columnToAdd: Column = {
       id: generateKey(),
-      title: `Column ${columns.length + 1}`
+      title
     }
 
     setColumns([...columns, columnToAdd]);

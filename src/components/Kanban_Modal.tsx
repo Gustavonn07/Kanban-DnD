@@ -1,12 +1,14 @@
+import { twMerge } from "tailwind-merge";
 import Close_Icon from "./icons/Close_Icon";
 import { ReactNode } from "react";
 
 interface Props {
     setOpenModal: (openModal: boolean) => void;
     children: ReactNode
+    classDiv?: string
 }
 
-function Kanban_Modal({ setOpenModal, children }: Props) {
+function Kanban_Modal({ setOpenModal, children, classDiv }: Props) {
 
     return (
         <section 
@@ -15,7 +17,7 @@ function Kanban_Modal({ setOpenModal, children }: Props) {
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="w-10/12 relative stroke-2 h-[90vh] rounded shadow-md shadow-[#00000060] bg-slate-900"
+                className={twMerge("w-10/12 relative stroke-2 h-[90%] rounded shadow-md shadow-[#00000060] bg-slate-900", classDiv)}
             >
                 <button 
                     onClick={() => setOpenModal(false)}
