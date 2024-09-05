@@ -1,10 +1,11 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Column, Id, Task } from "../types";
 import { useTasksPerMonth } from "../hooks/useTasksPerMonth";
 import Kanban_Modal from "./Kanban_Modal";
 import Form_Input from "./form/Form_Input";
 import Form_Select from "./form/Form_Select";
 import { toast } from "sonner";
+import { inputs, options } from "./assets/tasks.inputs";
 
 interface Props {
     column: Column;
@@ -13,70 +14,29 @@ interface Props {
     setOpenModal: (openModal: boolean) => void;
     months: string[];
     tasks: Task[];
+    setValue: Dispatch<SetStateAction<{
+        title: string;
+        respon: string;
+        desc: string;
+        priority: string;
+    }>>;
+    value: {
+        title: string;
+        respon: string;
+        desc: string;
+        priority: string;
+    };
 }
 
-function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, setOpenModal }: Props) {
-
-    const inputs = [
-        {
-            label: "Task Title:",
-            type: "text",
-            classesInput: "",
-            classesLabel: "",
-            typeValue: "title",
-            placeholder: "Enter the title"
-        },
-        {
-            label: "Task Responsible:",
-            type: "text",
-            classesInput: "",
-            classesLabel: "",
-            typeValue: "respon",
-            placeholder: "Enter the person responsible for the task"
-        },
-        {
-            label: "Task Description:",
-            limiteChar: 500,
-            type: "textarea",
-            classesInput: "",
-            classesLabel: "",
-            typeValue: "desc",
-            placeholder: "Enter the description"
-        }
-    ];
-
-    const options = [
-        {
-            text: "Low",
-            class: "bg-emerald-400",
-            typeValue: "priority"
-        },
-        {
-            text: "Normal",
-            class: "bg-amber-300",
-            typeValue: "priority"
-        },
-        {
-            text: "Urgent",
-            class: "bg-rose-500",
-            typeValue: "priority"
-        }
-    ];
-
-    const [taskValues, setTaskValues] = useState({
-        title: '',
-        respon: '',
-        desc: '',
-        priority: 'Low'
-    });
+function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, setOpenModal, setValue, value }: Props) {
 
     const handleConfirm = () => {
         if(
-            taskValues.desc.length != 0 ||
-            taskValues.respon.length != 0 ||
-            taskValues.title.length != 0 
+            value.desc.length != 0 ||
+            value.respon.length != 0 ||
+            value.title.length != 0 
         ) {
-            createTask(column.id, taskValues);
+            createTask(column.id, value);
             useTasksPerMonth({months, tasks, setTasksPerMonth});
             setOpenModal(false);
 
@@ -94,8 +54,8 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                             key={index}
                             id={index}
                             typeValue={input.typeValue}
-                            setValue={setTaskValues}
-                            value={taskValues}
+                            setValue={setValue}
+                            value={value}
                             label={input.label}
                             limiteChar={input.limiteChar}
                             type={input.type}
@@ -108,7 +68,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                 <Form_Select 
                     title="Priority:"
                     options={options}
-                    setValue={setTaskValues}
+                    setValue={setValue}
                 />
             </form>
 

@@ -80,7 +80,7 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
             </h2>
             <button
                 onClick={() => deleteColumn(column.id)}
-                className="stroke-gray-500 hover:stroke-rose-600 hover:bg-columnBackgroundColor rounded px-1 py-2"
+                className="stroke-gray-500 duration-150 hover:stroke-rose-600 hover:bg-columnBackgroundColor rounded px-1 py-2"
             >
                 <Trash_icon />
             </button>

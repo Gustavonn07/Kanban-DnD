@@ -6,6 +6,9 @@ import { CSS } from "@dnd-kit/utilities";
 import { twMerge } from "tailwind-merge";
 import { Colors } from "../utils/classes/getColors";
 import Edit_Icon from "./icons/Edit_Icon";
+import Form_Input from "./form/Form_Input";
+import Form_Select from "./form/Form_Select";
+import { inputs, options } from "./assets/tasks.inputs";
 
 interface Props {
   task: Task;
@@ -13,25 +16,11 @@ interface Props {
   updateTask: (id: Id, content: { title: string; desc: string; respon: string; priority: string }) => void;
 }
 
-// Criar forma de editar
-
 function Kanban_Task({ task, deleteTask, updateTask }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [content, setContent] = useState(task.content);
   const Color = new Colors();
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && e.shiftKey) {
-      e.preventDefault();
-      updateTask(task.id, content);
-      toggleEditMode();
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(prev => ({ ...prev, title: e.target.value }));
-  };
 
   const { 
     setNodeRef, 
@@ -55,7 +44,6 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
   };
 
   function toggleEditMode() {
-    // Mudar editMode
     setEditMode(prev => !prev);
     setMouseIsOver(false);
     if (!editMode) {
@@ -73,75 +61,100 @@ function Kanban_Task({ task, deleteTask, updateTask }: Props) {
     );
   }
 
-  if (editMode) {
-    return (
-      <li
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className="bg-mainBackgroundColor p-2.5 h-[10rem] min-h-[10rem] items-center flex flex-col text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-rose-500 duration-150 cursor-grab text-xl relative"
-      >
-        <p className="p-2 opacity-40">Press enter + shift to save</p>
-        <textarea
-          className="h-[90%] w-full resize-none border-none rounded bg-transparent text-white focus:outline-none"
-          value={content.title}
-          placeholder="Task content here."
-          autoFocus
-          onBlur={() => {
-            if (editMode) {
-              updateTask(task.id, content);
-              toggleEditMode();
-            }
-          }}
-          onKeyDown={handleKeyDown}
-          onChange={handleChange}
-        />
-      </li>
-    );
-  }
-
   return (
     <li
-      {...attributes}
-      {...listeners}
       ref={setNodeRef}
       style={style}
-      className={twMerge("bg-mainBackgroundColor p-2.5 h-[12.5rem] active:h-[30rem] focus:h-[30rem] flex text-left rounded ring-2 hover:ring-inset hover:ring-violet-500 duration-150 cursor-grab text-xl relative", Color.getPriorityColors(content.priority))}
+      {...attributes}
+      {...listeners}
+      className={twMerge(
+        `bg-mainBackgroundColor p-2.5 ${editMode ? "h-[30rem]" : "active:h-[30rem] focus:h-[30rem] h-[12.5rem]"} flex text-left rounded ring-2 hover:ring-inset hover:ring-violet-500 duration-150 cursor-grab text-xl relative`, 
+        Color.getPriorityColors(content.priority)
+      )}
       onMouseEnter={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
     >
-      <article className="relative flex flex-col justify-between h-full w-full p-2 overflow-y-auto overflow-x-hidden whitespace-normal">
-        <h5 className="text-2xl font-semibold">{content.title}</h5>
-        <p
-          className="text-xl py-4 overflow-x-hidden overflow-y-auto"
-        >
-          {content.desc}
-        </p>
+      {editMode ? (
+        <form className="flex flex-col justify-between h-full w-full p-2 overflow-y-auto overflow-x-hidden whitespace-normal">
+          <p className="pb-4 opacity-40 text-center">Press the button "Save" to save</p>
+          {inputs.map((input, index) => (
+            <Form_Input
+              key={index}
+              id={index}
+              typeValue={input.typeValue}
+              setValue={setContent}
+              value={content}
+              label={input.label}
+              limiteChar={input.limiteChar}
+              type={input.type}
+              classesInput={"text-lg"}
+              classesLabel={"text-2xl"}
+              placeholder={input.placeholder}
+            />
+          ))}
 
-        <div className="flex justify-between">
-          <p className="text-lg">Responsible: {content.respon}</p>
-          <p className="text-lg">Priority: {content.priority}</p>
-        </div>
-      </article>
+          <Form_Select 
+            title="Priority:"
+            options={options}
+            setValue={setContent}
+            classesSelect="text-xl"
+            classesLabel="text-2xl"
+            valueDefined={content.priority}
+          />
 
-      {mouseIsOver && (
+          <div className="flex pt-10 gap-5">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                updateTask(task.id, content);
+                toggleEditMode();
+              }}
+              className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-emerald-400 hover:border-emerald-400 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                toggleEditMode();
+              }}
+              className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+        
+      ) : (
+        <article className="relative flex flex-col justify-between h-full w-full p-2 overflow-y-auto overflow-x-hidden whitespace-normal">
+          <h5 className="text-2xl font-semibold">{content.title}</h5>
+          <p className="text-xl py-4 overflow-x-hidden overflow-y-auto">{content.desc}</p>
+          <div className="flex justify-between">
+            <p className="text-lg">Responsible: {content.respon}</p>
+            <p className="text-lg">Priority: {content.priority}</p>
+          </div>
+        </article>
+      )}
+
+      {mouseIsOver && !editMode && (
         <>
           <button
-            className="stroke-white absolute right-4 top-10 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100 hover:stroke-rose-600"
+            className="stroke-white absolute right-4 top-10 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100 hover:stroke-rose-600 duration-150"
             onClick={(e) => {
-              deleteTask(task.id)
-              e.stopPropagation()
+              deleteTask(task.id);
+              e.stopPropagation();
             }}
           >
             <Trash_icon />
           </button>
 
           <button
-            className="stroke-white absolute right-20 top-10 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100"
+            className="stroke-white absolute right-20 top-10 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded-lg opacity-60 hover:opacity-100 hover:stroke-amber-300 duration-150"
             onClick={(e) => {
-              toggleEditMode
-              e.stopPropagation()
+              toggleEditMode();
+              e.stopPropagation();
             }}
           >
             <Edit_Icon />

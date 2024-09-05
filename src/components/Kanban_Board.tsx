@@ -28,6 +28,12 @@ function Kanban_Board() {
   const [columnTitle, setColumnTitle] = useState<string>("new Column");
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [taskValues, setTaskValues] = useState({
+    title: '',
+    respon: '',
+    desc: '',
+    priority: 'Low'
+});
 
   const { openModal, open, close } = useModal();
   const months = new getDateInfo().getMonthsNames();
@@ -136,6 +142,8 @@ function Kanban_Board() {
 
                   {openModal === `createTask ${col.id}` && (
                     <Kanban_Create 
+                      setValue={setTaskValues}
+                      value={taskValues}
                       column={col}
                       createTask={createTask}
                       months={months}
@@ -170,6 +178,8 @@ function Kanban_Board() {
 
                 {openModal === `createTask ${activeColumn.id}` && (
                   <Kanban_Create 
+                    setValue={setTaskValues}
+                    value={taskValues}
                     column={activeColumn}
                     createTask={createTask}
                     months={months}
