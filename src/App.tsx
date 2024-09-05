@@ -11,7 +11,8 @@ function App() {
       <Toaster
         toastOptions={{
             classNames: {
-            success: 'bg-green-400 border-columnBackgroundColor'
+            success: 'bg-green-400 border-columnBackgroundColor',
+            error: 'bg-rose-500 border-columnBackgroundColor text-gray-200'
           }
         }}
       />

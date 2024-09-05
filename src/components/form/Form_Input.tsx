@@ -11,6 +11,12 @@ interface Props {
         desc: string;
         priority: string;
     }>>;
+    value: {
+        title: string;
+        respon: string;
+        desc: string;
+        priority: string;
+    };
     type: string;
     id: Id; 
     classesLabel?: string;
@@ -19,11 +25,12 @@ interface Props {
     limiteChar?: number;
 }
 
-// Criar forma de dar required antes de enviar / alem de usar o limiteChar
+// Criar forma de dar required antes de enviar
 function Form_Input({
     label,
     typeValue,
     setValue,
+    value,
     type,
     id,
     placeholder,
@@ -39,6 +46,21 @@ function Form_Input({
             [typeValue]: value
         }));
     };
+
+    const getCharCount = () => {
+        switch (typeValue) {
+            case 'title':
+                return value.title.length;
+            case 'desc':
+                return value.desc.length;
+            case 'respon':
+                return value.respon.length;
+            default:
+                return 0;
+        }
+    };
+
+    const charCount = getCharCount();
 
     return (
         <div className="flex flex-col w-full">
@@ -75,7 +97,7 @@ function Form_Input({
                 />
             )}
             <span className="pt-1 self-end text-lg">
-                00/{limiteChar}
+                {charCount}/{limiteChar}
             </span>
         </div>
     );

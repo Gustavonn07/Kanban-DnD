@@ -5,7 +5,6 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { twMerge } from "tailwind-merge";
 import { Colors } from "../utils/classes/getColors";
-import { truncateString } from "../utils/functions/getTruncateString";
 import Edit_Icon from "./icons/Edit_Icon";
 
 interface Props {

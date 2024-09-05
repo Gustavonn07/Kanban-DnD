@@ -4,6 +4,7 @@ import { useTasksPerMonth } from "../hooks/useTasksPerMonth";
 import Kanban_Modal from "./Kanban_Modal";
 import Form_Input from "./form/Form_Input";
 import Form_Select from "./form/Form_Select";
+import { toast } from "sonner";
 
 interface Props {
     column: Column;
@@ -70,9 +71,18 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
     });
 
     const handleConfirm = () => {
-        createTask(column.id, taskValues);
-        useTasksPerMonth({months, tasks, setTasksPerMonth});
-        setOpenModal(false);
+        if(
+            taskValues.desc.length != 0 ||
+            taskValues.respon.length != 0 ||
+            taskValues.title.length != 0 
+        ) {
+            createTask(column.id, taskValues);
+            useTasksPerMonth({months, tasks, setTasksPerMonth});
+            setOpenModal(false);
+
+        } else {
+            toast.error("Todos os campos devem estar preenchidos.");
+        }
     };
 
     return (
@@ -85,6 +95,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                             id={index}
                             typeValue={input.typeValue}
                             setValue={setTaskValues}
+                            value={taskValues}
                             label={input.label}
                             limiteChar={input.limiteChar}
                             type={input.type}
