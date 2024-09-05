@@ -47,6 +47,10 @@ export const KanbanMethods = ({
     setLogs([...logs, newLog]);
   }
 
+  function deleteLogs() {
+    setLogs([]);
+  }
+
   function createTask(columnId: Id, content: { title: string; desc: string; respon: string; priority: string }) {
     const newTask: Task = {
         id: generateKey(),
@@ -94,7 +98,7 @@ export const KanbanMethods = ({
 
     const updatedTask = newTasks.find(task => task.id === id);
   
-    if (updatedTask) {
+    if (updatedTask && updatedTask.content != prevContent) {
       createLog(updatedTask.columnId, updatedTask.content.title, "updateTask", prevContent?.title, updatedTask.id);
       toast.success(`Task ${truncateString(updatedTask.content.title, 12)} has been changed`);
     }
@@ -140,7 +144,7 @@ function updateColumn(id: Id, title: string) {
 
     const updatedColumn = newColumns.find(col => col.id === id);
 
-    if (updatedColumn) {
+    if (updatedColumn && updatedColumn.title != prevContent) {
       createLog(updatedColumn.id, updatedColumn.title, "updateColumn", prevContent);
       toast.success(`Column ${truncateString(updatedColumn.title, 12)} has been changed`);
     };
@@ -242,6 +246,7 @@ function onDragStart(event: DragStartEvent) {
     createTask,
     deleteColumn,
     deleteTask,
+    deleteLogs,
     onDragEnd,
     onDragOver,
     onDragStart,

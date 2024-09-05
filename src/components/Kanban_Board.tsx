@@ -57,7 +57,8 @@ function Kanban_Board() {
     onDragOver,
     onDragStart,
     updateColumn,
-    updateTask
+    updateTask,
+    deleteLogs
   } = KanbanMethods({
     columns,
     setColumns,
@@ -67,7 +68,7 @@ function Kanban_Board() {
     setLogs,
     setActiveColumn,
     activeColumn,
-    setActiveTask
+    setActiveTask,
   });
 
   useEffect(() => {
@@ -237,6 +238,7 @@ function Kanban_Board() {
           logs={logs}
           setOpenLogModal={() => close()}
           columns={columns}
+          deleteLogs={deleteLogs}
         />
       }
 
