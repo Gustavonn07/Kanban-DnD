@@ -1,6 +1,7 @@
 import './style/App.css';
 import Kanban_Board from './components/Kanban_Board';
 import { Toaster } from 'sonner';
+import Footer from './components/geral.Footer';
 
 function App() {
   // Código autoral de Gustavonn07 - Gustavo Nepomuceno Nogueira
@@ -16,6 +17,7 @@ function App() {
           }
         }}
       />
+      <Footer />
     </>
   )
 }

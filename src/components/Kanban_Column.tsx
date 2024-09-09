@@ -72,12 +72,10 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
                         placeholder="Column title here."
                         value={title}
                         onChange={handleChange}
-                        onBlur={() => {
-                            if (editMode) {
-                                updateColumn(column.id, title);
-                                setEditMode(false);
-                            }
-                        }}
+                        onBlur={() => { if (editMode) {
+                            updateColumn(column.id, title);
+                            setEditMode(false);
+                        }}}
                         onKeyDown={handleKeyDown}
                         className="bg-black focus:border-rose-500 border rounded w-11/12 outline-none px-2"
                     />
@@ -108,7 +106,6 @@ function Column_Title({ column, deleteColumn, attributes, listeners, setEditMode
 function Column_Footer({ setOpenModal }: PropsFooter) {
 
     return (
-
         <button
             className="mt-auto flex gap-2 items-center border-mainBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-violet-500 active:bg-black duration-150 text-xl font-semibold stroke-2"
             onClick={() => {
@@ -182,9 +179,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, tasks, deleteTask, 
                 </SortableContext>
             </ul>
 
-            <Column_Footer 
-                setOpenModal={setOpenModal}
-            />
+            <Column_Footer setOpenModal={setOpenModal}/>
         </section>
     )
 }

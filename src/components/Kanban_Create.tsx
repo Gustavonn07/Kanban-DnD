@@ -48,23 +48,21 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
     return (
         <Kanban_Modal setOpenModal={setOpenModal}>
             <form className="grid grid-cols-2 w-full gap-y-10 gap-x-32 px-32 py-16">
-                {
-                    inputs.map((input, index) => (
-                        <Form_Input
-                            key={index}
-                            id={index}
-                            typeValue={input.typeValue}
-                            setValue={setValue}
-                            value={value}
-                            label={input.label}
-                            limiteChar={input.limiteChar}
-                            type={input.type}
-                            classesInput={input.classesInput}
-                            classesLabel={input.classesLabel}
-                            placeholder={input.placeholder}
-                        />
-                    ))
-                }
+                {inputs.map((input, index) => (
+                    <Form_Input
+                        key={index}
+                        id={index}
+                        typeValue={input.typeValue}
+                        setValue={setValue}
+                        value={value}
+                        label={input.label}
+                        limiteChar={input.limiteChar}
+                        type={input.type}
+                        classesInput={input.classesInput}
+                        classesLabel={input.classesLabel}
+                        placeholder={input.placeholder}
+                    />
+                ))}
                 <Form_Select 
                     title="Priority:"
                     options={options}
