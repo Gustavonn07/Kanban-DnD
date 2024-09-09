@@ -46,8 +46,11 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
     };
 
     return (
-        <Kanban_Modal setOpenModal={setOpenModal}>
-            <form className="grid grid-cols-2 w-full gap-y-10 gap-x-32 px-32 py-16">
+        <Kanban_Modal 
+            setOpenModal={setOpenModal}
+            classDiv="sm:h-10/12 self-center"
+        >
+            <form className="grid sm:grid-cols-2 grid-cols-1 overflow-y-scroll w-full lg:gap-y-10 lg:gap-x-32 lg:px-32 lg:py-16 gap-y-2.5 gap-x-8 px-8 py-4">
                 {inputs.map((input, index) => (
                     <Form_Input
                         key={index}
@@ -70,7 +73,7 @@ function Kanban_Create({ column, createTask, setTasksPerMonth, months, tasks, se
                 />
             </form>
 
-            <div className="absolute right-32 bottom-20 flex gap-10">
+            <div className="md:absolute pl-8 md:p-0 right-32 lg:bottom-20 bottom-10 flex gap-10">
                 <button
                     className="mt-auto flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
                     onClick={() => setOpenModal(false)}

@@ -27,9 +27,10 @@ function Kanban_Graphics({ setOpenGraphicsModal, columns, tasks, tasksPerMonth, 
     return (
         <Kanban_Modal
             setOpenModal={setOpenGraphicsModal}
+            classDiv="sm:w-10/12 w-full"
         >
-            <ul className="flex gap-5 px-5 overflow-hidden items-center h-full">
-                <li className="w-1/2 h-5/6">
+            <ul className="flex gap-5 px-5 sm:overflow-hidden overflow-auto items-center h-full">
+                <li className="w-1/2 min-w-[30rem] h-5/6">
                 <h2 className="flex justify-center items-center w-full py-3 text-4xl font-semibold">Tasks per columns</h2>
                     <Chart_Pie
                         labels={pieLabels}
@@ -37,7 +38,7 @@ function Kanban_Graphics({ setOpenGraphicsModal, columns, tasks, tasksPerMonth, 
                         colors={colors}
                     />
                 </li>
-                <li className="w-1/2 h-5/6 flex flex-col justify-between items-center bg-gray-200 rounded-md p-8 shadow-xl shadow-[#00000090]">
+                <li className="w-1/2 min-w-[30rem] h-5/6 flex flex-col justify-between items-center bg-gray-200 rounded-md p-8 shadow-xl shadow-[#00000090]">
                     <h2 className="flex justify-center items-center w-full text-4xl text-mainBackgroundColor font-semibold">Tasks per month</h2>
                     <Chart_Bar
                         labels={months}

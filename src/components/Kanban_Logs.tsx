@@ -31,7 +31,7 @@ function Log_Container({ log, columns, index }: PropsContainer) {
   
     return (
         <li
-            className={twMerge('p-2 rounded relative shadow-md shadow-[#00000060] w-full max-w-full min-h-[6rem] text-columnBackgroundColor font-medium flex justify-start items-center gap-2 text-2xl ', logStyles[log.type][0] || 'bg-white text-black')}
+            className={twMerge('p-2 rounded relative shadow-md shadow-[#00000060] w-full max-w-full min-h-[6rem] text-columnBackgroundColor font-medium flex justify-start items-center gap-2 md:text-2xl sm:text-lg text-xs', logStyles[log.type][0] || 'bg-white text-black')}
         >   
             <span className="absolute top-1 left-3 text-base text-gray-500">
                 {log.date}
@@ -96,12 +96,12 @@ function Kanban_Logs({ setOpenLogModal, logs, columns, deleteLogs }: Props) {
                     e.preventDefault();
                     open("deleteLog");
                     }}
-                    className="absolute right-10 bottom-10 flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
+                    className="absolute z-50 bg-mainBackgroundColor right-10 bottom-10 flex gap-2 items-center border-gray-200 border-2 rounded-md py-4 justify-center w-64 hover:bg-rose-500 hover:border-rose-500 hover:text-gray-200 active:bg-black duration-150 text-xl font-semibold stroke-2"
                 >
                     Delete all logs
                 </button>
                 
-                <ul className="flex flex-col gap-6 overflow-y-auto h-full w-3/4 p-10">
+                <ul className="flex flex-col gap-6 overflow-y-auto h-full md:w-3/4 w-full p-10">
                     {
                         logs.map((log, index) => (
                             <Log_Container 

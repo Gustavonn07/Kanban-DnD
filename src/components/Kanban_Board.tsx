@@ -104,7 +104,7 @@ function Kanban_Board() {
         sensors={sensors}
       >
         <div className="m-auto flex flex-col justify-start gap-4 min-h-[90vh] w-full">
-          <div className="flex gap-4">
+          <div className="flex sm:flex-row flex-col gap-4">
             <Button
               handler={() => open('column')}
             >
@@ -127,7 +127,7 @@ function Kanban_Board() {
             </Button>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex sm:flex-row flex-col gap-4">
             <SortableContext items={columnsId}>
               {columns.length !== 0 ? columns.map((col) => (
                 <div key={col.id}>
@@ -200,7 +200,7 @@ function Kanban_Board() {
       {openModal === 'column' && 
         <Kanban_Modal
           setOpenModal={() => close()}
-          classDiv="w-1/4 h-1/3 -translate-y-3/4"
+          classDiv="md:w-1/4 sm:w-1/2 w-2/3 h-1/3 -translate-y-3/4"
         >
           <div className="flex flex-col w-full h-full justify-center px-12 gap-10">
             <label

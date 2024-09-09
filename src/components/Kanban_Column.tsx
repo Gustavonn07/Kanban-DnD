@@ -153,7 +153,7 @@ function Kanban_Column({ column, deleteColumn, updateColumn, tasks, deleteTask, 
             ref={setNodeRef}
             style={style}
             id={`${column.id}`}
-            className="bg-columnBackgroundColor w-[35rem] min-w-[35rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col"
+            className="bg-columnBackgroundColor sm:w-[35rem] min-w-[25rem] h-[50rem] max-h-[50rem] rounded-md flex flex-col"
         >
             <Column_Title 
                 editMode={editMode}
